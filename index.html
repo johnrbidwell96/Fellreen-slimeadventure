@@ -661,7 +661,7 @@ function renderHaven() {
 
     Object.values(grouped).forEach(s => {
         const div = document.createElement('div');
-        div.className = 'haven-card' + (s.onMission ? ' on-mission' : ''
+        div.className = 'haven-card' + (s.onMission ? ' on-mission' : '');
 
         let timerHTML = '';
         if (s.onMission && s.missionEndTime) {
@@ -811,7 +811,7 @@ function updateBossLocks() {
         const req = BOSS_REQUIREMENTS[id];
         if (game.playerLevel >= req) {
             card.classList.remove('locked');
-            if (btn) btn.disabled = false;
+            if (btn) btn.disabled = true;
             lockText.style.display = 'none';
         } else {
             card.classList.add('locked');
@@ -1212,6 +1212,7 @@ function evolveSlime() {
 }
 
 function fuseSlimes() {
+    if (!canPerformAction()) return;
     const unlocked = game.slimes.filter(s => !s.locked);
     if (unlocked.length < 2) {
         log("Need at least 2 unlocked slimes to fuse.");
@@ -1286,6 +1287,7 @@ function toggleLock(index) {
 }
 
 function startBreeding() {
+    if (!canPerformAction()) return;
     if (game.slimes.length < 2) { log("Need at least 2 slimes to breed."); return; }
     const baby = generateRandomSlime("Medium");
     baby.level = 1;
@@ -1423,6 +1425,7 @@ function updateMissionTimersAndCompletions() {
 
 // ==================== WORKSHOP ====================
 function upgradeWorkshop(type) {
+    if (!canPerformAction()) return;
     if (type === 'advanced') {
         if ((game.resources.gold || 0) < 800 || (game.resources.manaShards || 0) < 25 || (game.resources.divineShards || 0) < 8) {
             log("Need 800 Gold + 25 Mana Shards + 8 Divine Shards");
@@ -1522,6 +1525,7 @@ function updateEndgameUI() {
 }
 
 function runVoidTower() {
+    if (!canPerformAction()) return;
     if (game.playerLevel < VOID_TOWER_MIN_LEVEL) {
         log(`The Endless Void Tower requires Player Level ${VOID_TOWER_MIN_LEVEL} to enter.`);
         return;
@@ -1564,6 +1568,7 @@ function runVoidTower() {
 }
 
 function divineConvergence() {
+    if (!canPerformAction()) return;
     if ((game.resources.divineShards || 0) < 25) {
         log("Need 25 Divine Shards");
         return;
