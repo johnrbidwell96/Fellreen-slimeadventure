@@ -41,6 +41,22 @@
     .mission-card:hover { border-color: #ffdd77; background: #1a4422; }
     .mission-card.selected { border-color: #ffdd77; background: #1a4422; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #113322; border: 3px solid #77ffaa; padding: 10px 18px; border-radius: 10px; z-index: 99999; font-size: 12px; }
+
+    /* DARK MODE STYLES */
+    body.dark-mode { background: radial-gradient(circle at 50% 20%, #1a1f2e, #0f121a) !important; }
+    body.dark-mode .game { background: rgba(22,26,36,0.98) !important; border-color: #3d5c4a !important; color: #c8d9d0 !important; }
+    body.dark-mode .top-section { background: #1a1f2e !important; border-bottom-color: #3d5c4a !important; }
+    body.dark-mode .gold-bar { background: #22283a !important; border-bottom-color: #3d5c4a !important; }
+    body.dark-mode .haven-bar { background: #1f2535 !important; }
+    body.dark-mode .panel,
+    body.dark-mode .explore-card,
+    body.dark-mode .mission-card,
+    body.dark-mode .haven-card { background: #1f2535 !important; border-color: #3d5c4a !important; }
+    body.dark-mode .haven-card { background: linear-gradient(#1f2535, #252c3d) !important; }
+    body.dark-mode button { background: #2a3042 !important; border-color: #3d5c4a !important; color: #c8d9d0 !important; }
+    body.dark-mode button:hover:not(:disabled) { background: #3d5c4a !important; color: #ffffff !important; }
+    body.dark-mode .collapsible-header { background: #1a1f2e !important; border-color: #3d5c4a !important; }
+    body.dark-mode .collapsible-header:hover { background: #252c3d !important; }
 </style>
 </head>
 <body>
@@ -55,6 +71,10 @@
             <button onclick="toggleDarkMode()" 
                     style="margin-left:auto; width:auto; min-height:32px; padding:4px 12px; font-size:11px; background:#2a3045; border-color:#5a6075;">
                 🌙 Dark Mode
+            </button>
+            <button onclick="saveGame()" 
+                    style="width:auto; min-height:32px; padding:4px 12px; font-size:11px; background:#2a5a3a; border-color:#77ffaa; margin-left:6px;">
+                💾 Save
             </button>
         </div>
         <div class="gold-bar">
@@ -383,6 +403,61 @@ function canPerformAction() {
     return true;
 }
 
+// ==================== DARK MODE + SAVE SYSTEM ====================
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('slimeDarkMode', isDark ? 'true' : 'false');
+}
+
+function loadDarkModePreference() {
+    if (localStorage.getItem('slimeDarkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+    }
+}
+
+function saveGame() {
+    try {
+        localStorage.setItem('slimeAdventureSave', JSON.stringify(game));
+        document.querySelectorAll('button').forEach(b => {
+            if (b.innerText.includes('Save') || b.innerText.includes('💾')) {
+                const original = b.innerText;
+                b.innerText = '✅ Saved!';
+                setTimeout(() => { if (b && b.parentNode) b.innerText = original; }, 1400);
+            }
+        });
+        log('✅ Game saved!');
+    } catch (e) {
+        log('Save failed.');
+    }
+}
+
+function loadGame() {
+    try {
+        const saved = localStorage.getItem('slimeAdventureSave');
+        if (saved) {
+            const loaded = JSON.parse(saved);
+            if (loaded.playerLevel) game.playerLevel = loaded.playerLevel;
+            if (loaded.playerExp) game.playerExp = loaded.playerExp;
+            if (loaded.resources) game.resources = loaded.resources;
+            if (loaded.slimes) game.slimes = loaded.slimes;
+            if (loaded.player) game.player = loaded.player;
+            if (loaded.workshop) game.workshop = loaded.workshop;
+            if (loaded.voidTowerFloor) game.voidTowerFloor = loaded.voidTowerFloor;
+            if (loaded.globalPowerBonus) game.globalPowerBonus = loaded.globalPowerBonus;
+            if (loaded.lifetimeDivineShards) game.lifetimeDivineShards = loaded.lifetimeDivineShards;
+            if (loaded.lifetimeSlimesTamed) game.lifetimeSlimesTamed = loaded.lifetimeSlimesTamed;
+            if (loaded.highestLevel) game.highestLevel = loaded.highestLevel;
+            return true;
+        }
+    } catch (e) {}
+    return false;
+}
+
+// Auto-save every 30 seconds
+setInterval(() => {
+    try { localStorage.setItem('slimeAdventureSave', JSON.stringify(game)); } catch(e){}
+}, 30000);
+
 // ==================== CONSTANTS ====================
 const elements = ["Water","Fire","Earth","Wind","Plant","Lightning","Ice","Shadow","Light","Metal","Poison","Crystal","Lava","Storm","Spirit","Void"];
 const names = {
@@ -586,7 +661,7 @@ function renderHaven() {
 
     Object.values(grouped).forEach(s => {
         const div = document.createElement('div');
-        div.className = 'haven-card' + (s.onMission ? ' on-mission' : '');
+        div.className = 'haven-card' + (s.onMission ? ' on-mission' : ''
 
         let timerHTML = '';
         if (s.onMission && s.missionEndTime) {
@@ -1558,12 +1633,13 @@ function flushUIUpdates() {
 
 // ==================== INIT ====================
 function initGame() {
+    loadGame(); // Load previous save if exists
+
     if (game.slimes.length === 0) {
         game.slimes.push(generateRandomSlime("Easy"));
         game.lifetimeSlimesTamed = 1;
     }
-    game.player.statPoints = 0;
-    game.highestLevel = 1;
+    if (!game.highestLevel) game.highestLevel = game.playerLevel || 1;
 
     updateUI();
     updateExploreLocks();
@@ -1571,6 +1647,7 @@ function initGame() {
     updateBossLocks();
     updateEndgameUI();
     startMissionTimerSystem();
+    loadDarkModePreference();
 
     log("✅ Game loaded successfully. Balanced stat system active. No runtime errors.");
 }
