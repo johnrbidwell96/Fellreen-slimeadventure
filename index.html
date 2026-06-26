@@ -255,7 +255,7 @@
     <header><h1>SLIME ADVENTURE</h1></header>
 
     <div class="tabs">
-        <div class="tab active" onclick="switchTab(0)">Explore</div>
+        <div class="tab active" onclick="switchTab(0)">Map</div>
         <div class="tab" onclick="switchTab(1)">Dungeons</div>
         <div class="tab" onclick="switchTab(2)">Manage</div>
         <div class="tab" onclick="switchTab(3)">Items</div>
@@ -263,60 +263,50 @@
         <div class="tab" onclick="switchTab(5)">Alchemy</div>
         <div class="tab" onclick="switchTab(6)">Workshop</div>
         <div class="tab" onclick="switchTab(7)">Shop</div>
-        <div class="tab" onclick="switchTab(8)">Endgame</div>
+        <div class="tab" onclick="switchTab(8)">Eternity</div>
         <div class="tab" onclick="switchTab(9)">Records</div>
     </div>
 
-    <!-- EXPLORE TAB -->
+    <!-- MAP TAB (New Visual Exploration System) -->
     <div id="tab0" class="content active">
         <div class="panel">
-            <h2>🌍 Explore the World</h2>
-            <p style="font-size:11px; opacity:0.85; margin-bottom:12px;">Slimes are rare and exciting. Resources drop more often.</p>
+            <h2>🗺️ World Map</h2>
+            <p style="font-size:11px; opacity:0.85; margin-bottom:12px;">Explore regions node by node. Clear nodes to unlock the next ones.</p>
 
-            <div class="collapsible-header" onclick="toggleSection('easyExplore')">
-                <span><strong>🟢 Easy</strong></span><span class="chevron">▼</span>
-            </div>
-            <div id="easyExploreContent" class="collapsible-content collapsed">
-                <div class="explore-card"><h3>🌲 Forest</h3><button onclick="exploreForest()">Explore Forest</button></div>
-                <div class="explore-card"><h3>🏘️ Town</h3><button onclick="exploreTown()">Explore Town</button></div>
-                <div class="explore-card"><h3>🌾 Plains</h3><button onclick="explorePlains()">Explore Plains</button></div>
-            </div>
-
-            <div class="collapsible-header" onclick="toggleSection('mediumExplore')" style="margin-top:12px;">
-                <span><strong>🟡 Medium</strong> <small style="color:#ffdd88;">(Lv 5+)</small></span><span class="chevron">▼</span>
-            </div>
-            <div id="mediumExploreContent" class="collapsible-content collapsed">
-                <div class="explore-card" id="card-mountain"><h3>⛰️ Mountain</h3><button onclick="exploreMountain()">Explore</button><div id="lock-mountain" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-lake"><h3>🌊 Crystal Lake</h3><button onclick="exploreLake()">Explore</button><div id="lock-lake" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-cave"><h3>🕳️ Cave</h3><button onclick="exploreCave()">Explore</button><div id="lock-cave" class="locked-text" style="display:none;"></div></div>
+            <!-- Greenwild Forest Region -->
+            <div style="margin-bottom:20px;">
+                <h3 style="margin-bottom:8px; color:#aaff99;">🌲 Greenwild Forest</h3>
+                <div id="map-greenwild" style="display:flex; flex-wrap:wrap; gap:12px; background:#0a2a1a; padding:16px; border-radius:12px; border:2px solid #77ffaa;">
+                    <!-- Nodes rendered dynamically by JS -->
+                </div>
             </div>
 
-            <div class="collapsible-header" onclick="toggleSection('hardExplore')" style="margin-top:12px;">
-                <span><strong>🟠 Hard</strong> <small style="color:#ffaa66;">(Lv 12+)</small></span><span class="chevron">▼</span>
-            </div>
-            <div id="hardExploreContent" class="collapsible-content collapsed">
-                <div class="explore-card" id="card-swamp"><h3>🌿 Swamp</h3><button onclick="exploreSwamp()">Explore</button><div id="lock-swamp" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-ruins"><h3>🏛️ Ancient Ruins</h3><button onclick="exploreRuins()">Explore</button><div id="lock-ruins" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-grove"><h3>🌳 Mystic Grove</h3><button onclick="exploreGrove()">Explore</button><div id="lock-grove" class="locked-text" style="display:none;"></div></div>
+            <div style="font-size:11px; opacity:0.7; margin-bottom:10px;">
+                Clear nodes in order to unlock the next one. Click a node to explore it.
             </div>
 
-            <div class="collapsible-header" onclick="toggleSection('extremeExplore')" style="margin-top:12px;">
-                <span><strong>🔴 Extreme</strong> <small style="color:#ff6688;">(Lv 25+)</small></span><span class="chevron">▼</span>
-            </div>
-            <div id="extremeExploreContent" class="collapsible-content collapsed">
-                <div class="explore-card" id="card-volcano"><h3>🌋 Volcano</h3><button onclick="exploreVolcano()">Explore</button><div id="lock-volcano" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-tundra"><h3>❄️ Frozen Tundra</h3><button onclick="exploreTundra()">Explore</button><div id="lock-tundra" class="locked-text" style="display:none;"></div></div>
+            <!-- Quick Stats -->
+            <div style="margin:12px 0; padding:10px; background:#0a2a1a; border-radius:8px; font-size:11px;">
+                <strong>Map Stats:</strong> 
+                <span id="mapQuickStats">Loading...</span>
             </div>
 
-            <div class="collapsible-header" onclick="toggleSection('endgameExplore')" style="margin-top:12px;">
-                <span><strong>🔴 Endgame</strong> <small style="color:#ff6688;">(Lv 55+)</small></span><span class="chevron">▼</span>
-            </div>
-            <div id="endgameExploreContent" class="collapsible-content collapsed">
-                <div class="explore-card" id="card-abyss"><h3>🌑 Abyssal Depths</h3><button onclick="exploreAbyss()">Explore</button><div id="lock-abyss" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-spire"><h3>✨ Celestial Spire</h3><button onclick="exploreSpire()">Explore</button><div id="lock-spire" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-void"><h3>🕳️ Void Realm</h3><button onclick="exploreVoid()">Explore</button><div id="lock-void" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-garden"><h3>🌸 Eternal Garden</h3><button onclick="exploreGarden()">Explore</button><div id="lock-garden" class="locked-text" style="display:none;"></div></div>
-                <div class="explore-card" id="card-nexus"><h3>🔷 Origin Nexus</h3><button onclick="exploreNexus()">Explore</button><div id="lock-nexus" class="locked-text" style="display:none;"></div></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <button onclick="autoExploreClearedNodes()" 
+                        style="width:auto; padding:8px 16px; font-size:11px; background:#2a3042; border-color:#aaff99;">
+                    ⚡ Auto-Explore Cleared Nodes
+                </button>
+                
+                <button onclick="toggleAutoFarm()" 
+                        style="width:auto; padding:8px 16px; font-size:11px; background:#3a2a42; border-color:#ffaa99;">
+                    🔄 Toggle Auto Farm Loop
+                </button>
+
+                <!-- Difficulty Control at Bottom -->
+                <button onclick="cycleMapDifficulty()" 
+                        style="width:auto; padding:8px 14px; font-size:11px; background:#2a3042; border-color:#ffdd77;">
+                    Difficulty: <strong id="mapDifficultyDisplay">Easy</strong>
+                </button>
             </div>
         </div>
     </div>
@@ -534,7 +524,7 @@
     <!-- ENDGAME TAB -->
     <div id="tab8" class="content">
         <div class="panel">
-            <h2>Endgame</h2>
+            <h2>Eternity</h2>
             <div style="margin-bottom:20px;">
                 <h3 style="margin-bottom:10px; color:#ffdd99;">Permanent Milestones</h3>
                 <div id="milestoneList" style="background:#0a2a1a; border:2px solid #ffdd77; border-radius:10px; padding:12px; font-size:12px; line-height:1.6;"></div>
@@ -685,8 +675,24 @@
 
         <div id="slimeManagementList" style="max-height:420px; overflow-y:auto; background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:8px;"></div>
 
-        <div style="text-align:center; margin-top:14px;">
-            <button onclick="closeSlimeManagementModal()" style="background:#552222; border-color:#ffaa66;">Close</button>
+        <div style="text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button onclick="bulkLockSelected()" style="width:auto; min-height:38px; padding:6px 16px; background:#2a3042; border-color:#aaff99;">🔒 Bulk Lock Selected</button>
+            <button onclick="bulkUnlockSelected()" style="width:auto; min-height:38px; padding:6px 16px; background:#2a3042; border-color:#aaff99;">🔓 Bulk Unlock Selected</button>
+            <button onclick="closeSlimeManagementModal()" style="width:auto; min-height:38px; padding:6px 16px; background:#552222; border-color:#ffaa66;">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- EXPLORATION EVENT MODAL -->
+<div id="explorationEventModal" class="modal">
+    <div class="modal-content" style="max-width:520px;">
+        <h2 id="eventTitle" style="margin-bottom:8px; color:#ffdd99;"></h2>
+        <p id="eventText" style="margin-bottom:16px; line-height:1.5; font-size:13px;"></p>
+        
+        <div id="eventChoices" style="display:flex; flex-direction:column; gap:8px;"></div>
+        
+        <div style="text-align:center; margin-top:16px;">
+            <button onclick="closeEventModal()" style="background:#552222; border-color:#ffaa66; width:auto; min-height:38px; padding:6px 20px;">Close</button>
         </div>
     </div>
 </div>
@@ -900,6 +906,569 @@ const MILESTONES = [
 
 const VOID_TOWER_MIN_LEVEL = 90;
 
+// ==================== MAP / NODE PROGRESSION ====================
+const MAP_DATA = {
+    greenwild: {
+        name: "Greenwild Forest",
+        nodes: [
+            { id: "gw1", name: "Whispering Glade", baseDifficulty: "Easy", reward: "Good resources + slime chance" },
+            { id: "gw2", name: "Old Oak Hollow", baseDifficulty: "Normal", reward: "Better resources" },
+            { id: "gw3", name: "Hidden Grove", baseDifficulty: "Hard", reward: "High rewards + possible rare slime" },
+            { id: "gw4", name: "Ancient Roots", baseDifficulty: "Normal", reward: "Good resources" }
+        ]
+    },
+    crystal: {
+        name: "Crystal Mountains",
+        nodes: [
+            { id: "cm1", name: "Crystal Path", baseDifficulty: "Normal", reward: "Crystal & good resources" },
+            { id: "cm2", name: "Frozen Peak", baseDifficulty: "Hard", reward: "High value rewards" },
+            { id: "cm3", name: "Glacier Core", baseDifficulty: "Hard", reward: "Excellent rewards + rare slime chance" }
+        ]
+    },
+    shadowfen: {
+        name: "Shadowfen Swamp",
+        nodes: [
+            { id: "sf1", name: "Murkwood Trail", baseDifficulty: "Normal", reward: "Shadow resources + herbs" },
+            { id: "sf2", name: "Bog of Whispers", baseDifficulty: "Hard", reward: "High shadow essence" },
+            { id: "sf3", name: "Witch's Hollow", baseDifficulty: "Hard", reward: "Rare slime chance + mana" },
+            { id: "sf4", name: "Blackroot Depths", baseDifficulty: "Normal", reward: "Strong resources" },
+            { id: "sf5", name: "Thornveil Marsh", baseDifficulty: "Hard", reward: "Excellent rewards + catalyst chance" },
+            { id: "sf6", name: "Abyssal Mire (Boss)", baseDifficulty: "Hard", reward: "Top tier rewards + legendary slime chance" }
+        ]
+    },
+    volcanic: {
+        name: "Volcanic Wastes",
+        nodes: [
+            { id: "vw1", name: "Ashen Fields", baseDifficulty: "Normal", reward: "Fire resources + stone" },
+            { id: "vw2", name: "Lava Rivers", baseDifficulty: "Hard", reward: "High crystal & refined essence" },
+            { id: "vw3", name: "Ember Peak", baseDifficulty: "Hard", reward: "Excellent fire rewards" },
+            { id: "vw4", name: "Magma Core", baseDifficulty: "Hard", reward: "Top tier resources + rare slime" },
+            { id: "vw5", name: "Infernal Spire (Boss)", baseDifficulty: "Hard", reward: "Best rewards in region + divine chance" }
+        ]
+    },
+    celestial: {
+        name: "Celestial Peaks",
+        nodes: [
+            { id: "cp1", name: "Starlit Path", baseDifficulty: "Normal", reward: "Light & mana resources" },
+            { id: "cp2", name: "Moonveil Ridge", baseDifficulty: "Hard", reward: "High divine shard chance" },
+            { id: "cp3", name: "Astral Observatory", baseDifficulty: "Hard", reward: "Excellent rewards + catalyst" },
+            { id: "cp4", name: "Nexus of Stars", baseDifficulty: "Hard", reward: "Top tier rewards + legendary slime" },
+            { id: "cp5", name: "Throne of the Cosmos (Boss)", baseDifficulty: "Hard", reward: "Ultimate rewards + massive power bonus chance" }
+        ]
+    }
+};
+
+function getMapProgress(region) {
+    if (!game.mapProgress) game.mapProgress = {};
+    if (!game.mapProgress[region]) {
+        game.mapProgress[region] = {
+            cleared: [],
+            unlocked: ["gw1"] // First node starts unlocked
+        };
+    }
+    return game.mapProgress[region];
+}
+
+function isNodeUnlocked(region, nodeId) {
+    const progress = getMapProgress(region);
+    return progress.unlocked.includes(nodeId);
+}
+
+function isNodeCleared(region, nodeId) {
+    const progress = getMapProgress(region);
+    return progress.cleared.includes(nodeId);
+}
+
+function clearNode(region, nodeId) {
+    const progress = getMapProgress(region);
+    if (!progress.cleared.includes(nodeId)) {
+        progress.cleared.push(nodeId);
+    }
+
+    // Unlock next node in sequence
+    const regionData = MAP_DATA[region];
+    const currentIndex = regionData.nodes.findIndex(n => n.id === nodeId);
+    if (currentIndex !== -1 && currentIndex < regionData.nodes.length - 1) {
+        const nextNodeId = regionData.nodes[currentIndex + 1].id;
+        if (!progress.unlocked.includes(nextNodeId)) {
+            progress.unlocked.push(nextNodeId);
+        }
+    }
+}
+
+function updateMapQuickStats() {
+    const el = document.getElementById('mapQuickStats');
+    if (!el) return;
+
+    let totalCleared = 0;
+    let totalNodes = 0;
+
+    Object.keys(MAP_DATA).forEach(regionKey => {
+        const progress = getMapProgress(regionKey);
+        const regionData = MAP_DATA[regionKey];
+        totalCleared += progress.cleared.length;
+        totalNodes += regionData.nodes.length;
+    });
+
+    el.innerHTML = `${totalCleared} / ${totalNodes} nodes cleared`;
+}
+
+function renderMap(region = "greenwild") {
+    const container = document.getElementById('map-greenwild');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const regionData = MAP_DATA[region];
+    const progress = getMapProgress(region);
+
+    // Add region switcher
+    const switcher = document.createElement('div');
+    switcher.style.cssText = 'width:100%; margin-bottom:12px; display:flex; gap:8px;';
+    switcher.innerHTML = `
+        <button onclick="renderMap('greenwild')" style="flex:1; padding:6px; font-size:11px; ${region === 'greenwild' ? 'background:#1a4422; border-color:#aaff99;' : ''}">🌲 Greenwild</button>
+        <button onclick="renderMap('crystal')" style="flex:1; padding:6px; font-size:11px; ${region === 'crystal' ? 'background:#1a4422; border-color:#aaff99;' : ''}" ${!getMapProgress('greenwild').cleared.includes('gw4') ? 'disabled style="opacity:0.5;"' : ''}>⛰️ Crystal</button>
+        <button onclick="renderMap('shadowfen')" style="flex:1; padding:6px; font-size:11px; ${region === 'shadowfen' ? 'background:#1a4422; border-color:#aaff99;' : ''}" ${!getMapProgress('crystal').cleared.includes('cm3') ? 'disabled style="opacity:0.5;"' : ''}>🌿 Shadowfen</button>
+        <button onclick="renderMap('volcanic')" style="flex:1; padding:6px; font-size:11px; ${region === 'volcanic' ? 'background:#1a4422; border-color:#aaff99;' : ''}" ${!getMapProgress('shadowfen').cleared.includes('sf6') ? 'disabled style="opacity:0.5;"' : ''}>🌋 Volcanic</button>
+        <button onclick="renderMap('celestial')" style="flex:1; padding:6px; font-size:11px; ${region === 'celestial' ? 'background:#1a4422; border-color:#aaff99;' : ''}" ${!getMapProgress('volcanic').cleared.includes('vw5') ? 'disabled style="opacity:0.5;"' : ''}>✨ Celestial</button>
+    `;
+    container.appendChild(switcher);
+
+    regionData.nodes.forEach((node, index) => {
+        const isUnlocked = progress.unlocked.includes(node.id);
+        const isCleared = progress.cleared.includes(node.id);
+
+        const div = document.createElement('div');
+        div.style.cssText = `
+            width: 155px;
+            min-height: 105px;
+            background: ${isCleared ? '#1a3a22' : isUnlocked ? '#113322' : '#0a1f18'};
+            border: 3px solid ${isCleared ? '#4ade80' : isUnlocked ? '#77ffaa' : '#555'};
+            border-radius: 12px;
+            padding: 11px 10px;
+            cursor: ${isUnlocked ? 'pointer' : 'not-allowed'};
+            opacity: ${isUnlocked ? '1' : '0.5'};
+            transition: all 0.2s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        `;
+
+        let statusHTML = '';
+        if (isCleared) {
+            statusHTML = `<div style="position:absolute; top:5px; right:7px; color:#4ade80; font-size:16px;">✅</div>`;
+        } else if (!isUnlocked) {
+            statusHTML = `<div style="position:absolute; top:5px; right:7px; color:#888; font-size:14px;">🔒</div>`;
+        }
+
+        div.innerHTML = `
+            ${statusHTML}
+            <div style="font-weight:bold; font-size:12px; margin-bottom:3px;">${node.name}</div>
+            <div style="font-size:10px; color:#ffdd88;">${node.baseDifficulty}</div>
+            <div style="font-size:9px; margin-top:5px; opacity:0.85; line-height:1.3;">${node.reward}</div>
+            ${node.baseDifficulty === "Hard" ? `
+                <div style="font-size:9px; color:#ffaa66; margin-top:4px;">
+                    Weak to: <strong>${getEnemyElementForDisplay(region)}</strong><br>
+                    <span style="color:#aaff99;">Good vs it: ${getRecommendedCounters(getEnemyElementForDisplay(region))}</span>
+                </div>` : ''}
+        `;
+
+        if (isUnlocked) {
+            if (isCleared) {
+                // Cleared nodes - farm directly
+                div.onclick = () => farmClearedNode(region, node);
+            } else {
+                // Non-cleared nodes - explore directly with global difficulty (no pop-up)
+                div.onclick = () => {
+                    const diff = currentMapDifficulty || "Easy";
+                    exploreNode(region, node.id, diff);
+                };
+            }
+        }
+
+        container.appendChild(div);
+
+        // Add simple connecting line between nodes
+        if (index < regionData.nodes.length - 1) {
+            const line = document.createElement('div');
+            line.style.cssText = `
+                width: 22px;
+                height: 3px;
+                background: #77ffaa;
+                align-self: center;
+                margin-top: 45px;
+                opacity: 0.4;
+            `;
+            container.appendChild(line);
+        }
+    });
+
+    // Update quick stats
+    updateMapQuickStats();
+}
+
+function showNodeDifficultyModal(region, node) {
+    const difficulties = ["Easy", "Normal", "Hard"];
+    const currentProgress = getMapProgress(region);
+
+    let html = `<h3 style="margin-bottom:8px;">${node.name}</h3>`;
+    html += `<p style="font-size:11px; margin-bottom:12px;">Choose difficulty:</p>`;
+
+    difficulties.forEach(diff => {
+        let rewardText = node.reward;
+        if (diff === "Hard") rewardText += " (Best rewards)";
+        else if (diff === "Normal") rewardText += " (Good rewards)";
+
+        html += `
+            <button onclick="exploreNode('${region}', '${node.id}', '${diff}'); closeNodeModal();" 
+                    style="margin:4px 0; text-align:left; padding:10px 14px; font-size:12px;">
+                <strong>${diff}</strong><br>
+                <small style="opacity:0.8;">${rewardText}</small>
+            </button>
+        `;
+    });
+
+    // Create simple modal
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:420px;">
+            ${html}
+            <div style="text-align:center; margin-top:10px;">
+                <button onclick="this.closest('.modal').remove()" style="background:#552222; border-color:#ffaa66; width:auto; padding:6px 18px;">Cancel</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function exploreNode(region, nodeId, difficulty) {
+    const node = MAP_DATA[region].nodes.find(n => n.id === nodeId);
+    if (!node) return;
+
+    const diff = difficulty.toLowerCase();
+    let expMin = 8, expMax = 14;
+    let disadvantagePenalty = 1.0;
+
+    if (difficulty === "Normal") { expMin = 13; expMax = 19; }
+    if (difficulty === "Hard")   { expMin = 20; expMax = 29; } // Better rewards for the risk
+
+    // Dynamic elemental weakness scaling (Hard difficulty only)
+    if (difficulty === "Hard") {
+        // Dynamically pick enemy element based on region
+        let enemyElement = "Fire";
+        if (region === "greenwild") {
+            enemyElement = ["Fire", "Plant", "Wind"][Math.floor(Math.random() * 3)];
+        } else if (region === "crystal") {
+            enemyElement = ["Ice", "Lightning", "Earth"][Math.floor(Math.random() * 3)];
+        }
+
+        // Find best advantage from player's current slimes
+        let bestAdvantage = 1.0;
+        game.slimes.forEach(slime => {
+            const chart = ELEMENT_CHART[slime.element];
+            if (chart) {
+                if (chart.strong.includes(enemyElement)) bestAdvantage = Math.max(bestAdvantage, 1.55);
+                if (chart.weak.includes(enemyElement)) bestAdvantage = Math.min(bestAdvantage, 0.65);
+            }
+        });
+
+        // Apply dynamic scaling
+        if (bestAdvantage < 1.0) {
+            disadvantagePenalty = 0.80; // 20% penalty for bad matchup
+            log(`⚠️ Weak against ${enemyElement}. Reduced rewards on Hard.`);
+        } else if (bestAdvantage > 1.3) {
+            disadvantagePenalty = 1.15; // 15% bonus for good matchup
+            log(`✨ Strong advantage vs ${enemyElement}! Bonus rewards.`);
+        }
+    }
+
+    const adjustedMin = Math.floor(expMin * disadvantagePenalty);
+    const adjustedMax = Math.floor(expMax * disadvantagePenalty);
+
+    doExplore(difficulty === "Easy" ? "Easy" : difficulty === "Normal" ? "Medium" : "Hard", node.name, adjustedMin, adjustedMax);
+
+    // Mark node as cleared after exploration
+    setTimeout(() => {
+        clearNode(region, nodeId);
+        renderMap(region);
+
+        // Unlock next region if Greenwild is fully cleared
+        if (region === "greenwild" && getMapProgress("greenwild").cleared.length >= 4) {
+            const crystalProgress = getMapProgress("crystal");
+            if (!crystalProgress.unlocked.includes("cm1")) {
+                crystalProgress.unlocked.push("cm1");
+                log("New region unlocked: Crystal Mountains!");
+            }
+        }
+
+        // Small permanent bonus for fully clearing a region
+        if (progress.cleared.length >= regionData.nodes.length) {
+            if (!game.mapRegionClearedBonus) game.mapRegionClearedBonus = {};
+            if (!game.mapRegionClearedBonus[region]) {
+                game.mapRegionClearedBonus[region] = true;
+                game.globalPowerBonus = (game.globalPowerBonus || 1) * 1.03;
+                log(`🌟 Region fully cleared! Permanent +3% Global Power Bonus.`);
+            }
+        }
+    }, 900);
+}
+
+function closeNodeModal() {
+    const modals = document.querySelectorAll('.modal');
+    if (modals.length > 0) modals[modals.length - 1].remove();
+}
+
+// Helper to show enemy element on Hard nodes
+function getEnemyElementForDisplay(region) {
+    if (region === "greenwild") {
+        return ["Fire", "Plant", "Wind"][Math.floor(Math.random() * 3)];
+    } else if (region === "crystal") {
+        return ["Ice", "Lightning", "Earth"][Math.floor(Math.random() * 3)];
+    }
+    return "Fire";
+}
+
+// Returns 2-3 recommended counter elements for a given enemy element
+function getRecommendedCounters(enemyElement) {
+    const recommendations = {
+        "Fire": "Water, Earth",
+        "Plant": "Fire, Ice",
+        "Wind": "Lightning, Ice",
+        "Ice": "Fire, Fighting",
+        "Lightning": "Ground, Grass",
+        "Earth": "Water, Grass"
+    };
+    return recommendations[enemyElement] || "Water, Fire";
+}
+
+// Returns reward multiplier based on region progression
+function getRegionRewardMultiplier(region) {
+    const multipliers = {
+        "greenwild": 1.0,
+        "crystal": 1.08,
+        "shadowfen": 1.16,
+        "volcanic": 1.24,
+        "celestial": 1.35
+    };
+    return multipliers[region] || 1.0;
+}
+
+// Enemy base power per region (used for Hard mode difficulty check)
+function getRegionEnemyPower(region) {
+    const powers = {
+        "greenwild": 320,
+        "crystal": 520,
+        "shadowfen": 780,
+        "volcanic": 1050,
+        "celestial": 1450
+    };
+    return powers[region] || 350;
+}
+
+// Central function to handle region unlocking when boss nodes are cleared
+function checkAndUnlockNextRegion(region, nodeId) {
+    if (nodeId === "cm3") {
+        const p = getMapProgress("shadowfen");
+        if (!p.unlocked.includes("sf1")) {
+            p.unlocked.push("sf1");
+            log("New region unlocked: Shadowfen Swamp!");
+        }
+    }
+    if (nodeId === "sf6") {
+        const p = getMapProgress("volcanic");
+        if (!p.unlocked.includes("vw1")) {
+            p.unlocked.push("vw1");
+            log("New region unlocked: Volcanic Wastes!");
+        }
+    }
+    if (nodeId === "vw5") {
+        const p = getMapProgress("celestial");
+        if (!p.unlocked.includes("cp1")) {
+            p.unlocked.push("cp1");
+            log("New region unlocked: Celestial Peaks!");
+        }
+    }
+}
+
+// Region-specific loot tables
+const REGION_LOOT_TABLES = {
+    greenwild: { resources: ["wood", "herbs", "jelly"], bonusChance: 0.30, slimeBonus: 0.10 },
+    crystal:   { resources: ["stone", "crystal", "refinedEssence"], bonusChance: 0.38, slimeBonus: 0.14 },
+    shadowfen: { resources: ["shadowEssence", "manaShards", "herbs"], bonusChance: 0.46, slimeBonus: 0.20 },
+    volcanic:  { resources: ["refinedEssence", "arcaneDust", "stone"], bonusChance: 0.52, slimeBonus: 0.19 },
+    celestial: { resources: ["divineShards", "manaShards", "refinedEssence"], bonusChance: 0.60, slimeBonus: 0.26 }
+};
+
+function autoExploreClearedNodes() {
+    const region = "greenwild"; // Can expand later
+    const progress = getMapProgress(region);
+    const regionData = MAP_DATA[region];
+
+    let explored = 0;
+
+    regionData.nodes.forEach(node => {
+        if (progress.cleared.includes(node.id)) {
+            const diff = node.baseDifficulty === "Hard" ? "Hard" : "Normal";
+            doExplore(diff === "Hard" ? "Hard" : "Medium", node.name, 10, 16);
+            explored++;
+        }
+    });
+
+    if (explored > 0) {
+        log(`Auto-explored ${explored} cleared node(s).`);
+        setTimeout(() => renderMap(region), 1200);
+    } else {
+        log("No cleared nodes to auto-explore yet.");
+    }
+}
+
+// Farm a cleared node again with reduced rewards (balanced)
+function farmClearedNode(region, node) {
+    // Use global difficulty selector
+    const diff = currentMapDifficulty || "Easy";
+    
+    // Integrated scaling: region + enemy power + difficulty
+    const regionMult = getRegionRewardMultiplier(region);
+    const enemyPower = getRegionEnemyPower(region);
+
+    // Estimate player power
+    let playerPower = 200;
+    if (game.slimes.length > 0) {
+        playerPower = Math.max(...game.slimes.map(s => s.power)) * Math.min(4, game.slimes.length);
+    }
+    const powerRatio = playerPower / enemyPower;
+
+    let rewardMult = Math.max(0.55, Math.min(1.7, powerRatio)) * regionMult;
+
+    if (diff === "Hard") {
+        if (powerRatio < 0.85) rewardMult *= 0.60;
+        else if (powerRatio > 1.3) rewardMult *= 1.10;
+    }
+
+    // Farming penalty
+    const farmingPenalty = (diff === "Hard") ? 0.55 : 0.70;
+    rewardMult *= farmingPenalty;
+
+    let expMin = 8, expMax = 14;
+    if (diff === "Normal") { expMin = 13; expMax = 19; }
+    if (diff === "Hard")   { expMin = 20; expMax = 29; }
+
+    const finalMin = Math.floor(expMin * rewardMult);
+    const finalMax = Math.floor(expMax * rewardMult);
+
+    doExplore(diff === "Hard" ? "Hard" : diff === "Normal" ? "Medium" : "Easy", node.name, finalMin, finalMax);
+
+    // Apply region-specific loot table
+    const lootTable = REGION_LOOT_TABLES[region];
+    if (lootTable && Math.random() < lootTable.bonusChance) {
+        const resource = lootTable.resources[Math.floor(Math.random() * lootTable.resources.length)];
+        const amount = Math.floor(2 + Math.random() * 3);
+        if (game.resources[resource] !== undefined) {
+            game.resources[resource] = (game.resources[resource] || 0) + amount;
+        }
+    }
+
+    log(`Farmed ${node.name}`);
+
+    // Refresh map visuals immediately
+    setTimeout(() => renderMap(region), 400);
+
+    // Region unlock logic (centralized)
+    checkAndUnlockNextRegion(region, node.id);
+}
+
+// ==================== AUTO FARM LOOP ====================
+let autoFarmInterval = null;
+let currentMapDifficulty = "Easy"; // Global difficulty for map
+
+function cycleMapDifficulty() {
+    if (currentMapDifficulty === "Easy") currentMapDifficulty = "Normal";
+    else if (currentMapDifficulty === "Normal") currentMapDifficulty = "Hard";
+    else currentMapDifficulty = "Easy";
+
+    // Update display
+    const display = document.getElementById('mapDifficultyDisplay');
+    if (display) display.innerText = currentMapDifficulty;
+}
+
+function toggleAutoFarm() {
+    if (autoFarmInterval) {
+        // Stop auto farm
+        clearInterval(autoFarmInterval);
+        autoFarmInterval = null;
+        log("Auto Farm stopped.");
+        return;
+    }
+
+    const region = "greenwild";
+    const progress = getMapProgress(region);
+    const regionData = MAP_DATA[region];
+
+    const clearedNodes = regionData.nodes.filter(node => progress.cleared.includes(node.id));
+
+    if (clearedNodes.length === 0) {
+        log("No cleared nodes to auto farm yet.");
+        return;
+    }
+
+    log("Auto Farm started. Farming cleared nodes...");
+
+    // Pause auto farm when tab is hidden (performance)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && autoFarmInterval) {
+            clearInterval(autoFarmInterval);
+            autoFarmInterval = null;
+            log("Auto Farm paused (tab hidden).");
+        }
+    }, { once: true });
+
+    autoFarmInterval = setInterval(() => {
+        // Stop if no more cleared nodes
+        if (clearedNodes.length === 0) {
+            clearInterval(autoFarmInterval);
+            autoFarmInterval = null;
+            log("Auto Farm stopped (no cleared nodes left).");
+            return;
+        }
+
+        // Pick a random cleared node
+        const randomNode = clearedNodes[Math.floor(Math.random() * clearedNodes.length)];
+        
+        // Farm silently
+        const diff = randomNode.baseDifficulty === "Hard" ? "Hard" : "Normal";
+        const reduction = 0.70;
+        let expMin = 8, expMax = 14;
+        if (diff === "Normal") { expMin = 13; expMax = 19; }
+        if (diff === "Hard")   { expMin = 20; expMax = 29; }
+
+        const reducedMin = Math.floor(expMin * reduction);
+        const reducedMax = Math.floor(expMax * reduction);
+
+        doExplore(diff === "Hard" ? "Hard" : "Medium", randomNode.name, reducedMin, reducedMax);
+
+        // Re-render map less frequently (better performance)
+        if (Math.random() < 0.12) {
+            renderMap(region);
+        }
+    }, 1760); // Increased speed by another 20% (every 1.76 seconds)
+}
+
+// Hook into tab switching to render map
+const originalSwitchTab = window.switchTab;
+window.switchTab = function(tabIndex) {
+    originalSwitchTab(tabIndex);
+    if (tabIndex === 0) {
+        // More reliable rendering
+        setTimeout(() => {
+            const container = document.getElementById('map-greenwild');
+            if (container && container.children.length < 3) {
+                renderMap("greenwild");
+            }
+        }, 120);
+    }
+};
+
 // ==================== SLIME TRAITS SYSTEM ====================
 const TRAIT_DEFINITIONS = {
     // Training Traits
@@ -998,8 +1567,41 @@ function applyTraitEffects(slime) {
     return powerMultiplier;
 }
 
+// ==================== TRAIT MECHANICAL EFFECTS ====================
+function getTrainingExpMultiplier(slime) {
+    if (!slime.traits || slime.traits.length === 0) return 1.0;
+    let multiplier = 1.0;
+    slime.traits.forEach(traitKey => {
+        if (traitKey === "quick_learner") multiplier *= 1.08;
+        if (traitKey === "training_focused") multiplier *= 1.14;
+        if (traitKey === "endurance_specialist") multiplier *= 1.22;
+        if (traitKey === "training_prodigy") multiplier *= 1.30;
+    });
+    return multiplier;
+}
+
+function getJellyProductionBonus(slime) {
+    if (!slime.traits || slime.traits.length === 0) return 0;
+    let bonus = 0;
+    slime.traits.forEach(traitKey => {
+        if (traitKey === "jelly_producer") bonus += 1;
+    });
+    return bonus;
+}
+
+function getBreedingRarityBonus(slime) {
+    if (!slime.traits || slime.traits.length === 0) return 0;
+    let bonus = 0;
+    slime.traits.forEach(traitKey => {
+        if (traitKey === "stable_bloodline") bonus += 0.05;
+        if (traitKey === "rare_lineage") bonus += 0.15;
+    });
+    return bonus;
+}
+
 // Hover tooltip for traits on Records page
 let currentTraitTooltip = null;
+let managementSelectedSlimes = []; // For multi-select in management modal
 
 function showTraitTooltip(element, traitKey) {
     hideTraitTooltip(); // Remove any existing tooltip
@@ -1523,29 +2125,27 @@ function doExplore(difficulty, location, minExp, maxExp) {
     gainPlayerExp(expGain);
 
     let resourcesGained = [];
-    let resChance = difficulty === "Easy" ? 0.68 : 
-                    difficulty === "Medium" ? 0.78 : 
-                    difficulty === "Hard" ? 0.85 : 0.92;
 
-    // Tonic also boosts resource drops
-    if (tonicBonus > 0) resChance = Math.min(0.98, resChance + 0.18);
+    const baseResChance = difficulty === "Easy" ? 0.68 : 
+                          difficulty === "Medium" ? 0.78 : 
+                          difficulty === "Hard" ? 0.85 : 0.92;
 
-    if (Math.random() < resChance) {
+    if (Math.random() < baseResChance) {
         const amt = 2 + Math.floor(Math.random() * 3);
         game.resources.wood = (game.resources.wood || 0) + amt;
         resourcesGained.push(`${amt} Wood`);
     }
-    if (Math.random() < resChance * 0.85) {
+    if (Math.random() < baseResChance * 0.85) {
         const amt = 1 + Math.floor(Math.random() * 2);
         game.resources.jelly = (game.resources.jelly || 0) + amt;
         resourcesGained.push(`${amt} Jelly`);
     }
-    if (Math.random() < resChance * 0.7) {
+    if (Math.random() < baseResChance * 0.7) {
         const amt = 1 + Math.floor(Math.random() * 2);
         game.resources.herbs = (game.resources.herbs || 0) + amt;
         resourcesGained.push(`${amt} Herbs`);
     }
-    if (Math.random() < resChance * 0.6) {
+    if (Math.random() < baseResChance * 0.6) {
         const amt = 1 + Math.floor(Math.random() * 2);
         game.resources.stone = (game.resources.stone || 0) + amt;
         resourcesGained.push(`${amt} Stone`);
@@ -1993,8 +2593,11 @@ function slimeParty() {
     });
     gainPlayerExp(6);
 
-    // Bonus jelly from happy slimes playing
-    const jellyBonus = 3 + Math.floor(Math.random() * 4);
+    // Bonus jelly from happy slimes playing (base + Jelly Producer trait)
+    let jellyBonus = 3 + Math.floor(Math.random() * 4);
+    game.slimes.forEach(slime => {
+        jellyBonus += getJellyProductionBonus(slime);
+    });
     game.resources.jelly = (game.resources.jelly || 0) + jellyBonus;
 
     // Temporary party buff: +10% team power for 90 minutes (great before dungeons/bosses)
@@ -2214,6 +2817,34 @@ function toggleLockFromManagement(originalIndex) {
     }
 }
 
+function bulkLockSelected() {
+    let count = 0;
+    game.slimes.forEach(slime => {
+        if (managementSelectedSlimes.includes(slime.id)) {
+            slime.locked = true;
+            count++;
+        }
+    });
+    if (count > 0) {
+        log(`Locked ${count} slime(s).`);
+        filterSlimeList();
+    }
+}
+
+function bulkUnlockSelected() {
+    let count = 0;
+    game.slimes.forEach(slime => {
+        if (managementSelectedSlimes.includes(slime.id)) {
+            slime.locked = false;
+            count++;
+        }
+    });
+    if (count > 0) {
+        log(`Unlocked ${count} slime(s).`);
+        filterSlimeList();
+    }
+}
+
 function toggleLock(index) {
     if (game.slimes[index]) {
         game.slimes[index].locked = !game.slimes[index].locked;
@@ -2367,15 +2998,29 @@ function updateMissionTimersAndCompletions() {
 
     game.slimes.forEach(slime => {
         if (slime.onMission && slime.missionEndTime && now >= slime.missionEndTime) {
-            const expGain = slime.currentMissionExp || 100;
+            let expGain = slime.currentMissionExp || 100;
+
+            // Apply Training trait multipliers
+            const trainingMult = getTrainingExpMultiplier(slime);
+            expGain = Math.floor(expGain * trainingMult);
+
+            // Jelly Producer bonus
+            const jellyBonus = getJellyProductionBonus(slime);
+            if (jellyBonus > 0) {
+                game.resources.jelly = (game.resources.jelly || 0) + jellyBonus;
+            }
+
             slime.exp = (slime.exp || 0) + expGain;
             slime.level = Math.floor(1 + (slime.exp || 0) / 95);
-            recalculateSlimePower(slime); // Power now grows fairly with level
+            recalculateSlimePower(slime);
             slime.onMission = false;
             slime.missionEndTime = null;
             slime.currentMissionId = null;
             slime.currentMissionExp = null;
-            log(`${slime.name} returned from training! +${expGain} EXP`);
+
+            let msg = `${slime.name} returned from training! +${expGain} EXP`;
+            if (jellyBonus > 0) msg += ` (+${jellyBonus} Jelly)`;
+            log(msg);
             changed = true;
         }
     });
@@ -2750,6 +3395,14 @@ function initGame() {
     } else {
         log("✅ New game started. Alchemy now powers your entire adventure!");
     }
+
+    // Force render Map tab on initial load
+    setTimeout(() => {
+        const mapContainer = document.getElementById('map-greenwild');
+        if (mapContainer) {
+            renderMap("greenwild");
+        }
+    }, 350);
 }
 
 initGame();
