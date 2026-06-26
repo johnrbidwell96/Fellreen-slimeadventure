@@ -6,7 +6,7 @@
 <title>Slime Adventure</title>
 <style>
     body { margin:0; padding:0; background: radial-gradient(circle at 50% 20%, #0a4a2a, #02190f); color: #bbffdd; font-family: 'Press Start 2P', system-ui; font-size: 13px; }
-    .game { max-width: 820px; margin: 8px auto; background: rgba(4,28,18,0.98); border: 8px solid #77ffaa; border-radius: 18px; box-shadow: 0 0 70px rgba(119,255,170,0.35); overflow: hidden; font-size: 13px; }
+    .game { max-width: 100%; margin: 8px auto; background: rgba(4,28,18,0.98); border: 8px solid #77ffaa; border-radius: 18px; box-shadow: 0 0 70px rgba(119,255,170,0.35); overflow: hidden; }
     .top-section { position: sticky; top: 0; z-index: 300; background: #0a2a1a; border-bottom: 6px solid #77ffaa; }
     .summary-bar { padding: 8px 14px; display: flex; align-items: center; gap: 14px; font-size: 12px; }
     .gold-bar { background: #0d2f22; padding: 8px 14px; text-align: center; border-bottom: 4px solid #ffdd77; }
@@ -19,31 +19,26 @@
     header { background: linear-gradient(#0f2f20, #2a6644); padding: 16px 14px; text-align: center; }
     h1 { font-family: 'Cinzel', serif; font-size: 28px; color: #ccffaa; text-shadow: 0 0 20px #77ffaa; margin: 0; }
     .tabs { display: flex; flex-wrap: wrap; background: #0a2218; border-bottom: 4px solid #77ffaa; }
-    .tab { padding: 11px 6px; cursor: pointer; border-right: 2px solid #336644; font-size: 11px; flex: 1 1 auto; text-align: center; min-width: 68px; transition: background 0.1s ease, color 0.1s ease; font-weight: 600; letter-spacing: 0.3px; }
-    .tab:hover { background: #113322; }
+    .tab { padding: 11px 6px; cursor: pointer; border-right: 2px solid #336644; font-size: 11px; flex: 1 1 auto; text-align: center; min-width: 68px; }
     .tab.active { background: #0d2f22; border-bottom: 4px solid #aaff99; color: #ccffaa; }
     .content { padding: 14px; display: none; }
     .content.active { display: block; }
-    .panel { background: #0d2f22; border: 4px solid #77ffaa; border-radius: 14px; padding: 14px; margin-bottom: 14px; transition: transform 0.1s ease, box-shadow 0.1s ease; }
-    button { width: 100%; padding: 12px 10px; margin: 6px 0; background: #116622; color: #eeffee; border: 3px solid #77ffaa; border-radius: 10px; font-size: 12px; cursor: pointer; min-height: 48px; transition: all 0.15s ease; font-weight: 500; }
-    button:hover:not(:disabled) { background: #33aa66; color: #003300; box-shadow: 0 4px 12px rgba(119, 255, 170, 0.25); transform: translateY(-1px); }
-    button:active:not(:disabled) { transform: translateY(1px); }
+    .panel { background: #0d2f22; border: 4px solid #77ffaa; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+    button { width: 100%; padding: 12px 10px; margin: 6px 0; background: #116622; color: #eeffee; border: 3px solid #77ffaa; border-radius: 10px; font-size: 12px; cursor: pointer; min-height: 48px; }
+    button:hover:not(:disabled) { background: #33aa66; color: #003300; box-shadow: 0 0 14px #77ffaa; }
     button:disabled { opacity: 0.45; cursor: not-allowed; background: #222; border-color: #555; }
-    .explore-card, .mission-card, .haven-card { transition: transform 0.1s ease, box-shadow 0.1s ease; }
-    .explore-card:hover, .mission-card:hover, .haven-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
     .explore-card { background: #113322; border: 3px solid #77ffaa; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
     .explore-card.locked { opacity: 0.5; background: #0a1f18; border-color: #555; }
     .locked-text { color: #ff6666; font-size: 11px; margin-top: 6px; font-weight: bold; }
-    .collapsible-header { background: #0a2a1a; border: 2px solid #ffdd77; border-radius: 10px; padding: 11px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; user-select: none; transition: background 0.1s ease; }
+    .collapsible-header { background: #0a2a1a; border: 2px solid #ffdd77; border-radius: 10px; padding: 11px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; user-select: none; }
     .collapsible-header:hover { background: #113322; }
     .collapsible-header .chevron { transition: transform 0.2s ease; }
     .collapsible-content { overflow: hidden; transition: max-height 0.3s ease, opacity 0.2s ease; }
     .collapsible-content.collapsed { max-height: 0; opacity: 0; padding: 0; margin: 0; }
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); display: none; align-items: center; justify-content: center; z-index: 9999; }
-    .modal-content { background: #0d2f22; border: 6px solid #77ffaa; border-radius: 16px; padding: 20px; max-width: 540px; width: 94%; max-height: 88vh; overflow-y: auto; animation: modalPopIn 0.2s ease-out; }
-    @keyframes modalPopIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .mission-card { background: #113322; border: 3px solid #77ffaa; border-radius: 12px; padding: 14px; margin: 8px 0; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease; }
-    .mission-card:hover { border-color: #ffdd77; background: #1a4422; transform: translateY(-2px); }
+    .modal-content { background: #0d2f22; border: 6px solid #77ffaa; border-radius: 16px; padding: 20px; max-width: 540px; width: 94%; max-height: 88vh; overflow-y: auto; }
+    .mission-card { background: #113322; border: 3px solid #77ffaa; border-radius: 12px; padding: 14px; margin: 8px 0; cursor: pointer; }
+    .mission-card:hover { border-color: #ffdd77; background: #1a4422; }
     .mission-card.selected { border-color: #ffdd77; background: #1a4422; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #113322; border: 3px solid #77ffaa; padding: 10px 18px; border-radius: 10px; z-index: 99999; font-size: 12px; }
     .recipe-row { display: flex; justify-content: space-between; align-items: center; margin: 6px 0; padding: 8px; background: #0a2a1a; border-radius: 8px; }
@@ -51,42 +46,182 @@
     .consumable-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
     .consumable-row button { flex: 1; min-width: 140px; }
 
-    input, select { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
-    input:focus, select:focus { outline: none; border-color: #aaff99; box-shadow: 0 0 0 3px rgba(119, 255, 170, 0.15); }
-
-    @media (max-width: 600px) {
-        .game { margin: 4px; border-radius: 12px; }
-        .haven-grid { max-height: 160px; }
-        button { min-height: 44px; font-size: 13px; }
-        .tab { padding: 10px 4px; font-size: 11px; }
+    /* ==================== OPTIMIZED DARK MODE ==================== */
+    body.dark-mode {
+        background: radial-gradient(circle at 50% 15%, #161b29, #0f121a) !important;
+        color: #c8d9d0 !important;
     }
 
-    /* DARK MODE STYLES */
-    body.dark-mode { background: radial-gradient(circle at 50% 15%, #161b29, #0f121a) !important; color: #c8d9d0 !important; }
-    body.dark-mode .game { background: rgba(20, 24, 34, 0.98) !important; border-color: #3d5c4a !important; box-shadow: 0 0 60px rgba(0, 0, 0, 0.6); }
-    body.dark-mode .top-section { background: #161b29 !important; border-bottom-color: #3d5c4a !important; }
-    body.dark-mode .gold-bar { background: #1f2535 !important; border-bottom-color: #3d5c4a !important; color: #ffdd99; }
-    body.dark-mode .haven-bar { background: #1a1f2e !important; }
-    body.dark-mode .panel { background: #1a1f2e !important; border-color: #3d5c4a !important; }
-    body.dark-mode .explore-card, body.dark-mode .mission-card, body.dark-mode .haven-card { background: #1f2535 !important; border-color: #3d5c4a !important; }
-    body.dark-mode .haven-card { background: linear-gradient(#1f2535, #252c3d) !important; }
-    body.dark-mode .haven-card:hover { border-color: #5a8a6a !important; }
-    body.dark-mode button { background: #252c3d !important; border-color: #3d5c4a !important; color: #c8d9d0 !important; }
-    body.dark-mode button:hover:not(:disabled) { background: #3d5c4a !important; color: #ffffff !important; border-color: #5a8a6a !important; }
-    body.dark-mode .collapsible-header { background: #161b29 !important; border-color: #3d5c4a !important; }
-    body.dark-mode .collapsible-header:hover { background: #1f2535 !important; }
-    body.dark-mode input, body.dark-mode select { background: #1a1f2e !important; border-color: #3d5c4a !important; color: #c8d9d0 !important; }
-    body.dark-mode .modal-content { background: #1a1f2e !important; border-color: #3d5c4a !important; }
-    body.dark-mode .toast { background: #1f2535 !important; border-color: #3d5c4a !important; }
+    body.dark-mode .game {
+        background: rgba(20, 24, 34, 0.98) !important;
+        border-color: #3d5c4a !important;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+    }
 
-    /* UI OPTIMIZATIONS */
-    .game { max-width: 820px; margin: 8px auto; font-size: 13px; }
-    button { transition: all 0.15s ease; font-weight: 500; }
-    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(119, 255, 170, 0.25); }
-    button:active:not(:disabled) { transform: translateY(1px); }
-    .haven-card, .explore-card, .mission-card, .panel { transition: transform 0.1s ease, box-shadow 0.1s ease; }
-    .haven-card:hover, .explore-card:hover, .mission-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
-    .tab:hover { background: #113322; }
+    body.dark-mode .top-section {
+        background: #161b29 !important;
+        border-bottom-color: #3d5c4a !important;
+    }
+
+    body.dark-mode .gold-bar {
+        background: #1f2535 !important;
+        border-bottom-color: #3d5c4a !important;
+        color: #ffdd99;
+    }
+
+    body.dark-mode .haven-bar {
+        background: #1a1f2e !important;
+    }
+
+    body.dark-mode .panel {
+        background: #1a1f2e !important;
+        border-color: #3d5c4a !important;
+    }
+
+    body.dark-mode .explore-card,
+    body.dark-mode .mission-card,
+    body.dark-mode .haven-card {
+        background: #1f2535 !important;
+        border-color: #3d5c4a !important;
+    }
+
+    body.dark-mode .haven-card {
+        background: linear-gradient(#1f2535, #252c3d) !important;
+    }
+
+    body.dark-mode .haven-card:hover {
+        border-color: #5a8a6a !important;
+    }
+
+    body.dark-mode button {
+        background: #252c3d !important;
+        border-color: #3d5c4a !important;
+        color: #c8d9d0 !important;
+    }
+
+    body.dark-mode button:hover:not(:disabled) {
+        background: #3d5c4a !important;
+        color: #ffffff !important;
+        border-color: #5a8a6a !important;
+    }
+
+    body.dark-mode .collapsible-header {
+        background: #161b29 !important;
+        border-color: #3d5c4a !important;
+    }
+
+    body.dark-mode .collapsible-header:hover {
+        background: #1f2535 !important;
+    }
+
+    body.dark-mode input,
+    body.dark-mode select {
+        background: #1a1f2e !important;
+        border-color: #3d5c4a !important;
+        color: #c8d9d0 !important;
+    }
+
+    body.dark-mode .modal-content {
+        background: #1a1f2e !important;
+        border-color: #3d5c4a !important;
+    }
+
+    body.dark-mode .toast {
+        background: #1f2535 !important;
+        border-color: #3d5c4a !important;
+    }
+
+    /* ==================== UI OPTIMIZATIONS ==================== */
+    .game {
+        max-width: 820px;
+        margin: 8px auto;
+        font-size: 13px;
+    }
+
+    button {
+        transition: all 0.15s ease;
+        font-weight: 500;
+    }
+
+    button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(119, 255, 170, 0.25);
+    }
+
+    button:active:not(:disabled) {
+        transform: translateY(1px);
+    }
+
+    .haven-card, .explore-card, .mission-card, .panel {
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .haven-card:hover, .explore-card:hover, .mission-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab {
+        transition: background 0.1s ease, color 0.1s ease;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .tab:hover {
+        background: #113322;
+    }
+
+    .modal-content {
+        animation: modalPopIn 0.2s ease-out;
+    }
+
+    @keyframes modalPopIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    input, select {
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: #aaff99;
+        box-shadow: 0 0 0 3px rgba(119, 255, 170, 0.15);
+    }
+
+    /* Better mobile support */
+    @media (max-width: 600px) {
+        .game {
+            margin: 4px;
+            border-radius: 12px;
+        }
+        
+        .haven-grid {
+            max-height: 160px;
+        }
+        
+        button {
+            min-height: 44px;
+            font-size: 13px;
+        }
+        
+        .tab {
+            padding: 10px 4px;
+            font-size: 11px;
+        }
+    }
+
+    /* Improved text readability */
+    .stats, .rarity {
+        font-feature-settings: "tnum";
+    }
 </style>
 </head>
 <body>
@@ -96,15 +231,20 @@
         <div class="summary-bar">
             <h2 style="margin:0; font-size:15px;">Slime Adventure</h2>
             <div>Player Lv <strong id="playerLevel">1</strong> <span id="playerExpText" style="font-size:10px; opacity:0.75;"></span></div>
-            <button onclick="toggleDarkMode()" style="margin-left:auto; width:auto; min-height:32px; padding:4px 12px; font-size:11px; background:#2a3045; border-color:#5a6075;">
+            
+            <!-- Dark Mode Toggle in Top Bar -->
+            <button onclick="toggleDarkMode()" 
+                    style="margin-left:auto; width:auto; min-height:32px; padding:4px 12px; font-size:11px; background:#2a3045; border-color:#5a6075;">
                 🌙 Dark Mode
             </button>
-            <button onclick="saveGame()" style="width:auto; min-height:32px; padding:4px 12px; font-size:11px; background:#2a5a3a; border-color:#77ffaa; margin-left:6px;">
+            <button onclick="saveGame()" 
+                    style="width:auto; min-height:32px; padding:4px 12px; font-size:11px; background:#2a5a3a; border-color:#77ffaa; margin-left:6px;">
                 💾 Save
             </button>
         </div>
         <div class="gold-bar">
-            <strong>🪙 Gold: <span id="goldDisplay">0</span></strong> &nbsp;&nbsp;|&nbsp;&nbsp; <strong>✨ Divine Shards: <span id="divineDisplay">0</span></strong>
+            <strong>🪙 Gold: <span id="goldDisplay">0</span></strong> &nbsp;&nbsp;|&nbsp;&nbsp; 
+            <strong>✨ Divine Shards: <span id="divineDisplay">0</span></strong>
         </div>
         <div class="haven-bar">
             <strong style="font-size:12px; display:block; margin-bottom:6px;">🐾 Your Slimes</strong>
@@ -184,7 +324,7 @@
     <!-- DUNGEONS TAB -->
     <div id="tab1" class="content">
         <div class="panel">
-            <h2>Dungeons & Boss Raids</h2>
+            <h2>Dungeons &amp; Boss Raids</h2>
             <div class="collapsible-header" onclick="toggleSection('regularDungeons')">
                 <span><strong>Regular Dungeons</strong></span><span class="chevron">▼</span>
             </div>
@@ -223,7 +363,8 @@
         <div class="panel">
             <h2>Management</h2>
 
-            <button onclick="openSlimeManagementModal()" style="margin-bottom:12px; background:#1a4422; border-color:#aaff99; font-size:13px;">
+            <button onclick="openSlimeManagementModal()" 
+                style="margin-bottom:12px; background:#1a4422; border-color:#aaff99; font-size:13px;">
                 📋 View All Slimes (Sort & Filter)
             </button>
 
@@ -263,7 +404,7 @@
         </div>
     </div>
 
-    <!-- PLAYER TAB -->
+    <!-- PLAYER TAB (Balanced Skills) -->
     <div id="tab4" class="content">
         <div class="panel">
             <h2>Slime Master Skills</h2>
@@ -279,38 +420,40 @@
         </div>
     </div>
 
-    <!-- ALCHEMY TAB -->
+    <!-- ALCHEMY TAB (IMPROVED) -->
     <div id="tab5" class="content">
         <div class="panel">
             <h2>Alchemy Lab</h2>
             <p style="font-size:11px; opacity:0.85; margin-bottom:10px;">Convert resources into powerful tools that boost every part of your adventure.</p>
             
             <div style="margin-bottom:12px; padding:8px; background:#0a2a1a; border-radius:8px; font-size:11px;">
-                <strong>Alchemy Stat Bonus:</strong> +<span id="alchemyBonus">0</span>% better yields & success
+                <strong>Alchemy Stat Bonus:</strong> +<span id="alchemyBonus">0</span>% better yields &amp; success
             </div>
 
+            <!-- Basic Recipes -->
             <div class="collapsible-header" onclick="toggleSection('basicAlchemy')" style="margin-bottom:8px;">
                 <span><strong>Basic Recipes</strong></span><span class="chevron">▼</span>
             </div>
             <div id="basicAlchemyContent" class="collapsible-content collapsed">
                 <div class="recipe-row">
                     <div>Training Scrolls<br><small>45 Wood</small></div>
-                    <button onclick="processMaterial('wood_to_scrolls')" title="Used in Training Missions for +50% EXP">Craft</button>
+                    <button onclick="processMaterial('wood_to_scrolls')">Craft</button>
                 </div>
                 <div class="recipe-row">
                     <div>Battle Elixir<br><small>30 Stone + 15 Jelly</small></div>
-                    <button onclick="processMaterial('stone_to_elixir')" title="Use before tough fights for +25% team power">Craft</button>
+                    <button onclick="processMaterial('stone_to_elixir')">Craft</button>
                 </div>
                 <div class="recipe-row">
                     <div>Healing Salve<br><small>25 Herbs + 10 Jelly</small></div>
-                    <button onclick="processMaterial('herbs_to_salve')" title="Gives all your slimes a burst of EXP">Craft</button>
+                    <button onclick="processMaterial('herbs_to_salve')">Craft</button>
                 </div>
                 <div class="recipe-row">
                     <div>Fertility Potion<br><small>35 Jelly + 20 Berries</small></div>
-                    <button onclick="processMaterial('berries_to_fertility')" title="Use when breeding for much better rarity odds">Craft</button>
+                    <button onclick="processMaterial('berries_to_fertility')">Craft</button>
                 </div>
             </div>
 
+            <!-- Advanced Recipes -->
             <div class="collapsible-header" onclick="toggleSection('advancedAlchemy')" style="margin:12px 0 8px 0;">
                 <span><strong>Advanced Recipes</strong></span><span class="chevron">▼</span>
             </div>
@@ -325,22 +468,23 @@
                 </div>
                 <div class="recipe-row">
                     <div>Power Serum<br><small>25 Essence + 15 Mana + 10 Shadow</small></div>
-                    <button onclick="processMaterial('make_power_serum')" title="Permanent +2% global power">Craft</button>
+                    <button onclick="processMaterial('make_power_serum')">Craft</button>
                 </div>
                 <div class="recipe-row">
                     <div>Alchemical Catalyst<br><small>30 Refined + 8 Divine + 15 Arcane</small></div>
-                    <button onclick="processMaterial('make_alchemical_catalyst')" title="Used for powerful Breakthrough Research">Craft</button>
+                    <button onclick="processMaterial('make_alchemical_catalyst')">Craft</button>
                 </div>
                 <div class="recipe-row">
                     <div>Refined Essence (Core)<br><small>20 Slime Essence + 8 Jelly</small></div>
-                    <button onclick="processMaterial('refine_essence')" title="Main way to produce Refined Essence (used in Workshop upgrades)">Craft</button>
+                    <button onclick="processMaterial('refine_essence')">Craft</button>
                 </div>
                 <div class="recipe-row">
                     <div>Explorer's Tonic<br><small>20 Herbs + 15 Jelly + 8 Wood</small></div>
-                    <button onclick="processMaterial('make_explorer_tonic')" title="Gives bonus slime chance and resources on your next explorations">Craft</button>
+                    <button onclick="processMaterial('make_explorer_tonic')">Craft</button>
                 </div>
             </div>
 
+            <!-- Currency Transmutation -->
             <div style="margin-top:16px; padding-top:12px; border-top: 2px solid #ffdd77;">
                 <h4 style="margin:0 0 8px 0; color:#ffdd99;">Currency Transmutation</h4>
                 <div class="recipe-row">
@@ -353,13 +497,14 @@
                 </div>
             </div>
 
+            <!-- Consumables Section -->
             <div style="margin-top:18px; padding-top:12px; border-top: 2px solid #ffdd77;">
                 <h4 style="margin:0 0 10px 0; color:#ffdd99;">🧪 Consumables (Use These!)</h4>
                 <div class="consumable-row">
-                    <button onclick="useHealingSalve()" style="background:#224422; border-color:#aaff99;" title="Gives every slime a decent amount of EXP instantly">Use Healing Salve<br><small>Boost all slimes EXP</small></button>
-                    <button onclick="useExplorerTonic()" style="background:#224422; border-color:#aaff99;" title="Must have charges from crafting. Gives exploration bonuses">Activate Explorer's Tonic<br><small id="tonicCount">0 charges</small></button>
+                    <button onclick="useHealingSalve()" style="background:#224422; border-color:#aaff99;">Use Healing Salve<br><small>Boost all slimes EXP</small></button>
+                    <button onclick="useExplorerTonic()" style="background:#224422; border-color:#aaff99;">Activate Explorer's Tonic<br><small id="tonicCount">0 charges</small></button>
                 </div>
-                <div style="font-size:10px; opacity:0.7; margin-top:6px;">Training Scrolls are used automatically when sending slimes on missions.</div>
+                <div style="font-size:10px; opacity:0.7; margin-top:6px;">Training Scrolls are used automatically when sending slimes on missions (toggle in training modal).</div>
             </div>
         </div>
     </div>
@@ -400,54 +545,47 @@
                 <button id="voidTowerBtn" onclick="runVoidTower()">Climb the Void Tower (Floor <span id="voidFloor">1</span>)</button>
             </div>
             <div><button onclick="divineConvergence()">Perform Divine Convergence<br><small>Cost increases each time (starts at 30)</small></button></div>
-            
-            <div style="margin-top:16px; padding-top:12px; border-top: 2px solid #ffdd77;">
-                <h4 style="margin:0 0 10px 0; color:#ffdd99;">Divine Upgrades</h4>
-                <button onclick="eternalInfusion()" style="background:#2a3042; border-color:#aaff99;" title="Permanently gain +1 to all 5 player stats.">Eternal Infusion<br><small>60 Divine Shards • +1 to all stats</small></button>
-                <button onclick="slimeAscension()" style="background:#2a3042; border-color:#aaff99;" title="Choose one slime and instantly evolve it + give it bonus levels.">Slime Ascension<br><small>45 Divine Shards • Evolve one slime</small></button>
-            </div>
-
             <div style="margin-top:20px;">
                 <h3 style="margin-bottom:10px; color:#ffdd99;">Lifetime Summary</h3>
                 <div id="lifetimeStats" style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:12px; font-size:12px; line-height:1.5;"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- RECORDS TAB -->
-    <div id="tab9" class="content">
-        <div class="panel">
-            <h2>📊 Records</h2>
-            <p style="font-size:11px; opacity:0.85; margin-bottom:16px;">Track your progress and achievements over your entire playthrough.</p>
+<!-- RECORDS / STATS TAB -->
+<div id="tab9" class="content">
+    <div class="panel">
+        <h2>📊 Records</h2>
+        <p style="font-size:11px; opacity:0.85; margin-bottom:16px;">Track your progress and achievements over your entire playthrough.</p>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
-                    <h4 style="margin:0 0 8px 0; color:#aaff99;">Combat</h4>
-                    <div id="combatStats"></div>
-                </div>
-
-                <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
-                    <h4 style="margin:0 0 8px 0; color:#aaff99;">Progression</h4>
-                    <div id="progressionStats"></div>
-                </div>
-
-                <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
-                    <h4 style="margin:0 0 8px 0; color:#aaff99;">Collection</h4>
-                    <div id="collectionStats"></div>
-                </div>
-
-                <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
-                    <h4 style="margin:0 0 8px 0; color:#aaff99;">Other</h4>
-                    <div id="otherStats"></div>
-                </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
+                <h4 style="margin:0 0 8px 0; color:#aaff99;">Combat</h4>
+                <div id="combatStats"></div>
             </div>
 
-            <!-- Trait Collection Section -->
-            <div style="margin-top:16px;">
-                <h3 style="margin-bottom:8px; color:#ffdd99;">Trait Collection</h3>
-                <div style="background:#0a2a1a; border:2px solid #aaff99; border-radius:10px; padding:14px; font-size:12px;">
-                    <div id="traitStats"></div>
-                </div>
+            <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
+                <h4 style="margin:0 0 8px 0; color:#aaff99;">Progression</h4>
+                <div id="progressionStats"></div>
+            </div>
+
+            <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
+                <h4 style="margin:0 0 8px 0; color:#aaff99;">Collection</h4>
+                <div id="collectionStats"></div>
+            </div>
+
+            <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:14px;">
+                <h4 style="margin:0 0 8px 0; color:#aaff99;">Other</h4>
+                <div id="otherStats"></div>
+            </div>
+        </div>
+
+        <!-- Trait Collection Section -->
+        <div style="margin-top:16px;">
+            <h3 style="margin-bottom:8px; color:#ffdd99;">Trait Collection</h3>
+            <div style="background:#0a2a1a; border:2px solid #aaff99; border-radius:10px; padding:14px; font-size:12px;">
+                <div id="traitStats"></div>
             </div>
         </div>
     </div>
@@ -473,7 +611,7 @@
 <div id="trainingModal" class="modal">
     <div class="modal-content">
         <h2>🏋️ Training Missions</h2>
-        <p style="font-size:12px; margin-bottom:12px;">Longer missions give better EXP per minute. Great for leaving the game running.</p>
+        <p style="font-size:12px; margin-bottom:12px;">Longer missions give better EXP per minute. Use Training Scrolls for bonus EXP!</p>
         <div id="missionList"></div>
         <div id="slimeSelectionForTraining" style="margin-top:16px; display:none;">
             <h3 style="margin-bottom:8px;">Select Slimes to Send</h3>
@@ -506,14 +644,18 @@
     </div>
 </div>
 
-<!-- SLIME MANAGEMENT MODAL -->
+<!-- SLIME MANAGEMENT MODAL (Improved UI) -->
 <div id="slimeManagementModal" class="modal">
     <div class="modal-content" style="max-width:720px; width:95%;">
         <h2>📋 All Slimes</h2>
         
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; align-items:center;">
-            <input type="text" id="slimeSearch" placeholder="Search name or element..." oninput="filterSlimeList()" style="flex:1; min-width:180px; padding:8px; background:#113322; border:2px solid #77ffaa; border-radius:6px; color:#bbffdd;">
+            <!-- Search -->
+            <input type="text" id="slimeSearch" placeholder="Search name or element..." 
+                oninput="filterSlimeList()" 
+                style="flex:1; min-width:180px; padding:8px; background:#113322; border:2px solid #77ffaa; border-radius:6px; color:#bbffdd;">
             
+            <!-- Sort -->
             <select id="slimeSort" onchange="filterSlimeList()" style="padding:8px; background:#113322; border:2px solid #77ffaa; border-radius:6px; color:#bbffdd;">
                 <option value="power-desc">Power (High → Low)</option>
                 <option value="power-asc">Power (Low → High)</option>
@@ -522,6 +664,7 @@
                 <option value="name-asc">Name (A → Z)</option>
             </select>
             
+            <!-- Filters -->
             <select id="slimeFilterRarity" onchange="filterSlimeList()" style="padding:8px; background:#113322; border:2px solid #77ffaa; border-radius:6px; color:#bbffdd;">
                 <option value="">All Rarities</option>
                 <option value="Common">Common</option>
@@ -556,9 +699,19 @@ let game = {
     playerLevel: 1,
     playerExp: 0,
     playerExpToNext: 130,
-    resources: { wood: 0, stone: 0, herbs: 0, berries: 0, jelly: 0, gold: 0, slimeEssence: 0, manaShards: 0, shadowEssence: 0, crystal: 0, refinedEssence: 0, divineShards: 0, arcaneDust: 0, trainingScrolls: 0, battleElixir: 0, healingSalve: 0, fertilityPotion: 0, focusElixir: 0, powerSerum: 0, alchemicalCatalyst: 0, explorerTonic: 0 },
+    resources: {
+        wood: 0, stone: 0, herbs: 0, berries: 0, jelly: 0, gold: 0,
+        slimeEssence: 0, manaShards: 0, shadowEssence: 0, crystal: 0,
+        refinedEssence: 0, divineShards: 0, arcaneDust: 0,
+        trainingScrolls: 0, battleElixir: 0, healingSalve: 0,
+        fertilityPotion: 0, focusElixir: 0, powerSerum: 0, alchemicalCatalyst: 0,
+        explorerTonic: 0
+    },
     slimes: [],
-    player: { statPoints: 0, stats: { taming: 0, alchemy: 0, combat: 0, leadership: 0, endurance: 0 } },
+    player: {
+        statPoints: 0,
+        stats: { taming: 0, alchemy: 0, combat: 0, leadership: 0, endurance: 0 }
+    },
     workshop: { incubator: 0, trainingHall: 0, refinery: 0 },
     globalPowerBonus: 1.0,
     battleElixirActive: false,
@@ -570,6 +723,7 @@ let game = {
     lastSlimePartyTime: 0,
     partyPowerBonusUntil: 0,
     divineConvergenceCount: 0,
+    // Lifetime Records
     totalDamageDealt: 0,
     totalBossesDefeated: 0,
     totalDungeonsCleared: 0,
@@ -581,31 +735,46 @@ let currentBossId = null;
 let selectedSlimeIds = [];
 let selectedMissionId = null;
 let missionTimerInterval = null;
+
+// Cooldown to stop auto-clickers
 let lastActionTime = 0;
-const ACTION_COOLDOWN = 450;
+const ACTION_COOLDOWN = 450; // ms
 
 function canPerformAction() {
     const now = Date.now();
-    if (now - lastActionTime < ACTION_COOLDOWN) return false;
+    if (now - lastActionTime < ACTION_COOLDOWN) {
+        return false;
+    }
     lastActionTime = now;
     return true;
 }
 
-// ==================== DARK MODE + SAVE ====================
+// ==================== DARK MODE + SAVE SYSTEM ====================
 function toggleDarkMode() {
     const isDark = document.body.classList.toggle('dark-mode');
     localStorage.setItem('slimeDarkMode', isDark ? 'true' : 'false');
 }
 
 function loadDarkModePreference() {
-    if (localStorage.getItem('slimeDarkMode') === 'true') document.body.classList.add('dark-mode');
+    if (localStorage.getItem('slimeDarkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+    }
 }
 
 function saveGame() {
     try {
         localStorage.setItem('slimeAdventureSave', JSON.stringify(game));
+        document.querySelectorAll('button').forEach(b => {
+            if (b.innerText.includes('Save') || b.innerText.includes('💾')) {
+                const original = b.innerText;
+                b.innerText = '✅ Saved!';
+                setTimeout(() => { if (b && b.parentNode) b.innerText = original; }, 1400);
+            }
+        });
         log('✅ Game saved!');
-    } catch(e) { log('Save failed.'); }
+    } catch (e) {
+        log('Save failed.');
+    }
 }
 
 function loadGame() {
@@ -613,55 +782,1961 @@ function loadGame() {
         const saved = localStorage.getItem('slimeAdventureSave');
         if (saved) {
             const loaded = JSON.parse(saved);
-            Object.assign(game, loaded);
-            if (game.slimes && game.slimes.length > 0) game.slimes.forEach(s => recalculateSlimePower(s));
+            if (loaded.playerLevel) game.playerLevel = loaded.playerLevel;
+            if (loaded.playerExp) game.playerExp = loaded.playerExp;
+            if (loaded.resources) game.resources = loaded.resources;
+            if (loaded.slimes) game.slimes = loaded.slimes;
+            if (loaded.player) game.player = loaded.player;
+            if (loaded.workshop) game.workshop = loaded.workshop;
+            if (loaded.voidTowerFloor) game.voidTowerFloor = loaded.voidTowerFloor;
+            if (loaded.globalPowerBonus) game.globalPowerBonus = loaded.globalPowerBonus;
+            if (loaded.lifetimeDivineShards) game.lifetimeDivineShards = loaded.lifetimeDivineShards;
+            if (loaded.lifetimeSlimesTamed) game.lifetimeSlimesTamed = loaded.lifetimeSlimesTamed;
+            if (loaded.highestLevel) game.highestLevel = loaded.highestLevel;
+            if (loaded.explorerTonicCharges) game.explorerTonicCharges = loaded.explorerTonicCharges;
+            if (loaded.lastSlimePartyTime) game.lastSlimePartyTime = loaded.lastSlimePartyTime;
+            if (loaded.partyPowerBonusUntil) game.partyPowerBonusUntil = loaded.partyPowerBonusUntil;
+            if (loaded.divineConvergenceCount) game.divineConvergenceCount = loaded.divineConvergenceCount;
+            if (loaded.totalDamageDealt) game.totalDamageDealt = loaded.totalDamageDealt;
+            if (loaded.totalBossesDefeated) game.totalBossesDefeated = loaded.totalBossesDefeated;
+            if (loaded.totalDungeonsCleared) game.totalDungeonsCleared = loaded.totalDungeonsCleared;
+            if (loaded.totalFusions) game.totalFusions = loaded.totalFusions;
+            if (loaded.totalEvolutions) game.totalEvolutions = loaded.totalEvolutions;
+
+            // Migration: Recalculate all slime powers with the new fair system
+            if (game.slimes && game.slimes.length > 0) {
+                game.slimes.forEach(s => recalculateSlimePower(s));
+            }
+
             return true;
         }
-    } catch(e) {}
+    } catch (e) {}
     return false;
 }
 
-setInterval(() => { try { localStorage.setItem('slimeAdventureSave', JSON.stringify(game)); } catch(e){} }, 30000);
+// Auto-save every 30 seconds
+setInterval(() => {
+    try { localStorage.setItem('slimeAdventureSave', JSON.stringify(game)); } catch(e){}
+}, 30000);
 
 // ==================== CONSTANTS ====================
 const elements = ["Water","Fire","Earth","Wind","Plant","Lightning","Ice","Shadow","Light","Metal","Poison","Crystal","Lava","Storm","Spirit","Void"];
-const names = { Water: ["Aqua"], Fire: ["Blaze"], Earth: ["Terra"], Wind: ["Zephyr"], Plant: ["Bloom"], Lightning: ["Bolt"], Ice: ["Frost"], Shadow: ["Shade"], Light: ["Lumina"], Metal: ["Steel"], Poison: ["Venom"], Crystal: ["Gem"], Lava: ["Magma"], Storm: ["Tempest"], Spirit: ["Wisp"], Void: ["Abyss"] };
+const names = {
+    Water: ["Aqua"], Fire: ["Blaze"], Earth: ["Terra"], Wind: ["Zephyr"],
+    Plant: ["Bloom"], Lightning: ["Bolt"], Ice: ["Frost"], Shadow: ["Shade"],
+    Light: ["Lumina"], Metal: ["Steel"], Poison: ["Venom"], Crystal: ["Gem"],
+    Lava: ["Magma"], Storm: ["Tempest"], Spirit: ["Wisp"], Void: ["Abyss"]
+};
 
 const TRAINING_MISSIONS = [
-    { id: "quick", name: "Quick Session", durationMinutes: 10, expPerSlime: 20, desc: "Short practice" },
-    { id: "focused", name: "Focused Training", durationMinutes: 30, expPerSlime: 85, desc: "Good workout" },
-    { id: "rigorous", name: "Rigorous Drill", durationMinutes: 90, expPerSlime: 320, desc: "Hard training" },
-    { id: "endurance", name: "Endurance Training", durationMinutes: 180, expPerSlime: 780, desc: "Long dedicated session" },
-    { id: "master", name: "Master Regimen", durationMinutes: 360, expPerSlime: 1800, desc: "Maximum long-term gains (best for overnight)" }
+    { id: "quick", name: "Quick Session", durationMinutes: 10, expPerSlime: 22, desc: "Short practice" },
+    { id: "focused", name: "Focused Training", durationMinutes: 30, expPerSlime: 75, desc: "Good workout" },
+    { id: "rigorous", name: "Rigorous Drill", durationMinutes: 90, expPerSlime: 260, desc: "Hard training" },
+    { id: "endurance", name: "Endurance Training", durationMinutes: 180, expPerSlime: 580, desc: "Long dedicated session" },
+    { id: "master", name: "Master Regimen", durationMinutes: 360, expPerSlime: 1250, desc: "Maximum long-term gains (best for overnight)" }
 ];
 
-const ELEMENT_CHART = { /* ... */ };
+const ELEMENT_CHART = {
+    Water: { strong: ["Fire", "Lava"], weak: ["Lightning", "Ice", "Plant"] },
+    Fire: { strong: ["Plant", "Ice", "Wind"], weak: ["Water", "Earth", "Lava"] },
+    Earth: { strong: ["Lightning", "Fire", "Poison"], weak: ["Wind", "Water", "Plant"] },
+    Wind: { strong: ["Plant", "Poison", "Earth"], weak: ["Lightning", "Ice", "Storm"] },
+    Plant: { strong: ["Water", "Earth", "Poison"], weak: ["Fire", "Lava", "Wind"] },
+    Lightning: { strong: ["Water", "Wind", "Metal"], weak: ["Earth", "Plant", "Storm"] },
+    Ice: { strong: ["Water", "Plant", "Wind"], weak: ["Fire", "Lava", "Lightning"] },
+    Shadow: { strong: ["Light", "Spirit", "Void"], weak: ["Light", "Crystal", "Storm"] },
+    Light: { strong: ["Shadow", "Void", "Poison"], weak: ["Shadow", "Void", "Metal"] },
+    Metal: { strong: ["Lightning", "Ice", "Crystal"], weak: ["Fire", "Lava", "Poison"] },
+    Poison: { strong: ["Plant", "Water", "Spirit"], weak: ["Earth", "Wind", "Light"] },
+    Crystal: { strong: ["Shadow", "Void", "Lightning"], weak: ["Metal", "Fire", "Lava"] },
+    Lava: { strong: ["Plant", "Ice", "Metal"], weak: ["Water", "Earth", "Wind"] },
+    Storm: { strong: ["Wind", "Lightning", "Water"], weak: ["Earth", "Metal", "Crystal"] },
+    Spirit: { strong: ["Shadow", "Poison", "Void"], weak: ["Light", "Crystal", "Metal"] },
+    Void: { strong: ["Light", "Shadow", "Spirit"], weak: ["Crystal", "Storm", "Metal"] }
+};
 
-const bossData = { /* ... */ };
+const bossData = {
+    fire_dragon: { name: "Fire Dragon", element: "Fire", basePower: 180 },
+    stone_golem: { name: "Stone Golem", element: "Earth", basePower: 260 },
+    ancient_treant: { name: "Ancient Treant", element: "Plant", basePower: 380 },
+    shadow_lich: { name: "Shadow Lich", element: "Shadow", basePower: 520 },
+    storm_sovereign: { name: "Storm Sovereign", element: "Storm", basePower: 680 },
+    divine_colossus: { name: "Divine Colossus", element: "Light", basePower: 920 }
+};
 
-const UNLOCKABLE_AREAS = [ /* ... */ ];
+const UNLOCKABLE_AREAS = [
+    { id: "mountain", name: "Mountain", level: 5 },
+    { id: "lake", name: "Crystal Lake", level: 5 },
+    { id: "cave", name: "Cave", level: 5 },
+    { id: "swamp", name: "Swamp", level: 12 },
+    { id: "ruins", name: "Ancient Ruins", level: 12 },
+    { id: "grove", name: "Mystic Grove", level: 18 },
+    { id: "volcano", name: "Volcano", level: 25 },
+    { id: "tundra", name: "Frozen Tundra", level: 25 },
+    { id: "abyss", name: "Abyssal Depths", level: 55 },
+    { id: "spire", name: "Celestial Spire", level: 65 },
+    { id: "void", name: "Void Realm", level: 75 },
+    { id: "garden", name: "Eternal Garden", level: 85 },
+    { id: "nexus", name: "Origin Nexus", level: 95 }
+];
 
-const DUNGEON_REQUIREMENTS = { /* ... */ };
+const DUNGEON_REQUIREMENTS = {
+    forest_depths: 3, crystal_caverns: 8, shadow_abyss: 18, ancient_temple: 30,
+    molten_core: 42, glacial_spire: 48, thunder_sanctum: 55, abyssal_throne: 68, origin_core: 82
+};
 
-const BOSS_REQUIREMENTS = { /* ... */ };
+const BOSS_REQUIREMENTS = {
+    fire_dragon: 15, stone_golem: 28, ancient_treant: 45,
+    shadow_lich: 62, storm_sovereign: 78, divine_colossus: 92
+};
 
-const MILESTONES = [ /* ... */ ];
+const MILESTONES = [
+    { level: 30, name: "+5% Global Power", effect: () => { game.globalPowerBonus = (game.globalPowerBonus || 1) * 1.05; } },
+    { level: 50, name: "+2 extra Stat Points per level-up", effect: () => {} },
+    { level: 75, name: "+10% better rarity from exploration", effect: () => {} },
+    { level: 100, name: "Eternal Alchemy Recipes Unlocked", effect: () => { log("New powerful Alchemy recipes available!"); } },
+    { level: 150, name: "+15% more Divine Shards from bosses", effect: () => {} }
+];
 
 const VOID_TOWER_MIN_LEVEL = 90;
 
-const TRAIT_DEFINITIONS = { /* full definitions */ };
+// ==================== SLIME TRAITS SYSTEM ====================
+const TRAIT_DEFINITIONS = {
+    // Training Traits
+    "quick_learner":      { name: "Quick Learner", tier: "Common", desc: "+8% EXP from Quick and Focused training." },
+    "training_focused":   { name: "Training Focused", tier: "Uncommon", desc: "+14% EXP from all Training Missions." },
+    "endurance_specialist":{ name: "Endurance Specialist", tier: "Rare", desc: "+22% EXP from long training missions." },
+    "training_prodigy":   { name: "Training Prodigy", tier: "Epic", desc: "+30% EXP from all Training Missions." },
 
-const ACHIEVEMENTS = [ /* ... */ ];
+    // Combat Traits
+    "combat_instinct":    { name: "Combat Instinct", tier: "Common", desc: "+6% Power." },
+    "elemental_adept":    { name: "Elemental Adept", tier: "Uncommon", desc: "+12% power vs strong element matchups." },
+    "combat_veteran":     { name: "Combat Veteran", tier: "Rare", desc: "+18% Power." },
+    "battle_hardened":    { name: "Battle Hardened", tier: "Epic", desc: "+25% Power." },
 
-// (Full working game logic from local file - all functions present)
+    // Resource Traits
+    "jelly_producer":     { name: "Jelly Producer", tier: "Common", desc: "Produces extra Jelly from training and parties." },
+    "resourceful":        { name: "Resourceful", tier: "Uncommon", desc: "+12% resources from exploration." },
+    "essence_harvester":  { name: "Essence Harvester", tier: "Rare", desc: "+20% Slime Essence from dungeons." },
 
+    // Breeding Traits
+    "stable_bloodline":   { name: "Stable Bloodline", tier: "Common", desc: "Slightly better rarity when breeding." },
+    "rare_lineage":       { name: "Rare Lineage", tier: "Rare", desc: "+15% better rarity chance when breeding." }
+};
+
+function getTraitChanceByRarity(rarity) {
+    const chances = {
+        "Common":    { chance: 0.25, rarePlus: 0.08 },
+        "Uncommon":  { chance: 0.42, rarePlus: 0.18 },
+        "Rare":      { chance: 0.65, rarePlus: 0.35 },
+        "Epic":      { chance: 0.82, rarePlus: 0.55 },
+        "Legendary": { chance: 0.95, rarePlus: 0.75 }
+    };
+    return chances[rarity] || { chance: 0.3, rarePlus: 0.15 };
+}
+
+function generateTraitsForSlime(slime) {
+    if (!slime || slime.traits) return; // Already has traits or invalid
+
+    const rarityInfo = getTraitChanceByRarity(slime.rarity);
+    slime.traits = [];
+
+    // Roll for first trait
+    if (Math.random() < rarityInfo.chance) {
+        const tierRoll = Math.random();
+        let possibleTiers = ["Common"];
+
+        if (tierRoll < rarityInfo.rarePlus) {
+            possibleTiers = ["Rare", "Epic"];
+        } else if (tierRoll < rarityInfo.rarePlus * 1.8) {
+            possibleTiers = ["Uncommon", "Rare"];
+        } else {
+            possibleTiers = ["Common", "Uncommon"];
+        }
+
+        const availableTraits = Object.keys(TRAIT_DEFINITIONS).filter(key => 
+            possibleTiers.includes(TRAIT_DEFINITIONS[key].tier)
+        );
+
+        if (availableTraits.length > 0) {
+            const traitKey = availableTraits[Math.floor(Math.random() * availableTraits.length)];
+            slime.traits.push(traitKey);
+        }
+    }
+
+    // Small chance for a second trait on higher rarities
+    if (slime.rarity === "Epic" || slime.rarity === "Legendary") {
+        if (Math.random() < 0.35) {
+            const secondTierRoll = Math.random();
+            let secondTiers = secondTierRoll < 0.4 ? ["Rare", "Epic"] : ["Uncommon", "Rare"];
+
+            const available = Object.keys(TRAIT_DEFINITIONS).filter(key => 
+                secondTiers.includes(TRAIT_DEFINITIONS[key].tier) && !slime.traits.includes(key)
+            );
+
+            if (available.length > 0) {
+                const traitKey = available[Math.floor(Math.random() * available.length)];
+                slime.traits.push(traitKey);
+            }
+        }
+    }
+}
+
+// Apply trait effects (called in relevant places)
+function applyTraitEffects(slime) {
+    if (!slime.traits || slime.traits.length === 0) return 1.0;
+
+    let powerMultiplier = 1.0;
+
+    slime.traits.forEach(traitKey => {
+        if (traitKey === "combat_instinct") powerMultiplier *= 1.06;
+        if (traitKey === "elemental_adept") powerMultiplier *= 1.12; // Simplified
+        if (traitKey === "combat_veteran") powerMultiplier *= 1.18;
+        if (traitKey === "battle_hardened") powerMultiplier *= 1.25;
+    });
+
+    return powerMultiplier;
+}
+
+// Hover tooltip for traits on Records page
+let currentTraitTooltip = null;
+
+function showTraitTooltip(element, traitKey) {
+    hideTraitTooltip(); // Remove any existing tooltip
+
+    const def = TRAIT_DEFINITIONS[traitKey];
+    if (!def) return;
+
+    const tooltip = document.createElement('div');
+    tooltip.style.cssText = `
+        position: absolute;
+        background: #0a2a1a;
+        border: 2px solid #77ffaa;
+        border-radius: 8px;
+        padding: 10px 14px;
+        max-width: 260px;
+        z-index: 99999;
+        font-size: 12px;
+        color: #bbffdd;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        pointer-events: none;
+    `;
+
+    tooltip.innerHTML = `
+        <div style="margin-bottom:4px;">
+            <strong style="color:#aaff99;">${def.name}</strong>
+            <span style="font-size:9px; margin-left:6px; padding:1px 5px; background:#113322; border-radius:3px;">${def.tier}</span>
+        </div>
+        <div style="line-height:1.35;">${def.desc}</div>
+    `;
+
+    document.body.appendChild(tooltip);
+    currentTraitTooltip = tooltip;
+
+    // Position tooltip near the element
+    const rect = element.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+
+    let top = rect.bottom + window.scrollY + 8;
+    let left = rect.left + window.scrollX;
+
+    // Adjust if tooltip goes off screen
+    if (left + tooltipRect.width > window.innerWidth) {
+        left = window.innerWidth - tooltipRect.width - 10;
+    }
+
+    tooltip.style.top = `${top}px`;
+    tooltip.style.left = `${left}px`;
+}
+
+function hideTraitTooltip() {
+    if (currentTraitTooltip) {
+        currentTraitTooltip.remove();
+        currentTraitTooltip = null;
+    }
+}
+
+// ==================== LOG FUNCTION ====================
+function log(msg) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = msg;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.4s ease';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+    }, 2200);
+}
+
+// ==================== GENERATE RANDOM SLIME ====================
+function generateRandomSlime(difficulty = "Easy", useFertility = false) {
+    let rarityRoll = Math.random();
+    const tamingBonus = (game.player.stats.taming || 0) * 0.03;
+    rarityRoll = Math.max(0, rarityRoll - tamingBonus);
+
+    // Fertility potion bonus: significantly better rarity odds
+    if (useFertility) {
+        rarityRoll = Math.max(0, rarityRoll - 0.25);
+    }
+
+    let rarity;
+    if (difficulty === "Easy") {
+        rarity = (rarityRoll < 0.68) ? "Common" : (rarityRoll < 0.90) ? "Uncommon" : "Rare";
+    } else if (difficulty === "Medium") {
+        rarity = (rarityRoll < 0.42) ? "Common" : (rarityRoll < 0.78) ? "Uncommon" : (rarityRoll < 0.95) ? "Rare" : "Epic";
+    } else if (difficulty === "Hard") {
+        rarity = (rarityRoll < 0.22) ? "Common" : (rarityRoll < 0.58) ? "Uncommon" : (rarityRoll < 0.86) ? "Rare" : (rarityRoll < 0.96) ? "Epic" : "Legendary";
+    } else {
+        rarity = (rarityRoll < 0.12) ? "Common" : (rarityRoll < 0.42) ? "Uncommon" : (rarityRoll < 0.72) ? "Rare" : (rarityRoll < 0.91) ? "Epic" : "Legendary";
+    }
+
+    const element = elements[Math.floor(Math.random() * elements.length)];
+    const name = names[element][0];
+
+    const slime = {
+        id: Date.now() + Math.floor(Math.random() * 10000),
+        name: name,
+        element: element,
+        level: 1,
+        exp: 0,
+        power: 0,
+        rarity: rarity,
+        evolved: false,
+        onMission: false
+    };
+
+    recalculateSlimePower(slime); // Use new fair scaling system
+    generateTraitsForSlime(slime);
+
+    // Small difficulty bonus for higher areas
+    if (difficulty === "Extreme") {
+        slime.power = Math.floor(slime.power * 1.12);
+    }
+
+    return slime;
+}
+
+// ==================== LEVEL SYSTEM ====================
+function gainPlayerExp(amount) {
+    const oldLevel = game.playerLevel;
+    game.playerExp += amount;
+    let leveledUp = false;
+
+    while (game.playerExp >= game.playerExpToNext) {
+        game.playerExp -= game.playerExpToNext;
+        game.playerLevel++;
+        game.playerExpToNext = Math.floor(100 + (game.playerLevel * 105) + Math.pow(game.playerLevel, 1.78) * 16);
+        game.player.statPoints += 1;
+
+        MILESTONES.forEach(m => {
+            if (oldLevel < m.level && game.playerLevel >= m.level) {
+                m.effect();
+                log(`🌟 Milestone Unlocked: Level ${m.level} — ${m.name}`);
+            }
+        });
+
+        if (game.playerLevel > game.highestLevel) game.highestLevel = game.playerLevel;
+        leveledUp = true;
+        log(`✨ Player Level Up! You are now Level ${game.playerLevel}!`);
+    }
+
+    updateSummary();
+
+    if (leveledUp) {
+        updateExploreLocks();
+        updateDungeonLocks();
+        updateBossLocks();
+        updateUI();
+        updateEndgameUI();
+    }
+}
+
+function updateSummary() {
+    const levelEl = document.getElementById('playerLevel');
+    const expEl = document.getElementById('playerExpText');
+    const goldEl = document.getElementById('goldDisplay');
+    const divineEl = document.getElementById('divineDisplay');
+
+    if (levelEl) levelEl.innerText = game.playerLevel;
+    if (expEl) expEl.innerText = `(${game.playerExp}/${game.playerExpToNext})`;
+    if (goldEl) goldEl.innerText = game.resources.gold || 0;
+    if (divineEl) divineEl.innerText = game.resources.divineShards || 0;
+}
+
+// ==================== RENDER FUNCTIONS ====================
+function renderHaven() {
+    const container = document.getElementById('havenGrid');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (game.slimes.length === 0) {
+        container.innerHTML = '<div style="opacity:0.6; padding:8px;">No slimes yet. Explore to tame some!</div>';
+        return;
+    }
+
+    const grouped = {};
+    game.slimes.forEach(slime => {
+        const key = `${slime.name}-${slime.element}-${slime.rarity}`;
+        if (!grouped[key]) grouped[key] = { ...slime, count: 0 };
+        grouped[key].count++;
+    });
+
+    Object.values(grouped).forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'haven-card' + (s.onMission ? ' on-mission' : '');
+
+        let timerHTML = '';
+        if (s.onMission && s.missionEndTime) {
+            const remaining = Math.max(0, Math.ceil((s.missionEndTime - Date.now()) / 1000));
+            const timeStr = formatRemainingTime(remaining);
+            timerHTML = `<div class="mission-timer">⏳ On Mission: ${timeStr}</div>`;
+        }
+
+        let traitsHTML = '';
+        if (s.traits && s.traits.length > 0) {
+            const traitNames = s.traits.map(t => TRAIT_DEFINITIONS[t] ? TRAIT_DEFINITIONS[t].name : t).join(", ");
+            traitsHTML = `<div style="font-size:9px; color:#aaffcc; margin-top:3px;">${traitNames}</div>`;
+        }
+
+        div.innerHTML = `
+            <div class="name">${s.name} ×${s.count}</div>
+            <div class="stats">Lv ${s.level} • ${s.element} • ${s.power} PWR</div>
+            <div class="rarity" style="color:${getRarityColor(s.rarity)};">${s.rarity}</div>
+            ${traitsHTML}
+            ${timerHTML}
+        `;
+        container.appendChild(div);
+    });
+}
+
+function formatRemainingTime(seconds) {
+    if (seconds < 60) return `${seconds}s`;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    if (m < 60) return `${m}m ${s}s`;
+    const h = Math.floor(m / 60);
+    return `${h}h ${m % 60}m`;
+}
+
+function getRarityColor(rarity) {
+    switch (rarity) {
+        case "Common":    return "#9ca3af";
+        case "Uncommon":  return "#22c55e";
+        case "Rare":      return "#3b82f6";
+        case "Epic":      return "#a855f7";
+        case "Legendary": return "#f59e0b";
+        default:          return "#aaff99";
+    }
+}
+
+function renderInventory() {
+    const container = document.getElementById('inventoryGrid');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const items = [
+        { key: 'wood', label: 'Wood' }, { key: 'jelly', label: 'Jelly' }, { key: 'herbs', label: 'Herbs' },
+        { key: 'stone', label: 'Stone' }, { key: 'gold', label: 'Gold' },
+        { key: 'trainingScrolls', label: 'Training Scrolls' }, { key: 'battleElixir', label: 'Battle Elixir' },
+        { key: 'healingSalve', label: 'Healing Salve' }, { key: 'fertilityPotion', label: 'Fertility Potion' },
+        { key: 'refinedEssence', label: 'Refined Essence' }, { key: 'divineShards', label: 'Divine Shards' },
+        { key: 'manaShards', label: 'Mana Shards' }, { key: 'explorerTonic', label: 'Explorer Tonic' }
+    ];
+
+    items.forEach(item => {
+        const val = game.resources[item.key] || 0;
+        if (val > 0) {
+            const div = document.createElement('div');
+            div.style.cssText = 'background:#113322; border:2px solid #77ffaa; border-radius:8px; padding:8px 10px; margin:4px 0;';
+            div.innerHTML = `<strong>${item.label}:</strong> ${val}`;
+            container.appendChild(div);
+        }
+    });
+}
+
+function renderPlayer() {
+    const container = document.getElementById('playerStats');
+    if (!container) return;
+    const s = game.player.stats;
+    const alchemyBonus = Math.floor((s.alchemy || 0) * 4);
+    container.innerHTML = `
+        <div class="stat-row"><strong>Stat Points Available:</strong> ${game.player.statPoints}</div>
+        <div class="stat-row"><strong>Taming:</strong> ${s.taming} <small>(+${s.taming * 3}% better rarity)</small></div>
+        <div class="stat-row"><strong>Alchemy:</strong> ${s.alchemy} <small>(+${alchemyBonus}% better yields)</small></div>
+        <div class="stat-row"><strong>Combat:</strong> ${s.combat} <small>(+${s.combat * 2.5}% team power)</small></div>
+        <div class="stat-row"><strong>Leadership:</strong> ${s.leadership} <small>(+1 slot every 4 points)</small></div>
+        <div class="stat-row"><strong>Endurance:</strong> ${s.endurance} <small>(+${s.endurance * 5}% daily rewards)</small></div>
+    `;
+}
+
+function renderWorkshop() {
+    const container = document.getElementById('workshopUpgrades');
+    if (!container) return;
+    const refineryLevel = game.workshop.refinery || 0;
+    container.innerHTML = `
+        <button onclick="upgradeWorkshop('incubator')">Upgrade Incubator (Breeding) - 120 Gold + 8 Refined Essence</button>
+        <button onclick="upgradeWorkshop('trainingHall')">Upgrade Training Hall - 150 Gold + 10 Refined Essence</button>
+        <button onclick="upgradeWorkshop('refinery')">Upgrade Refinery (Alchemy) - 180 Gold + 12 Refined Essence<br><small>Current: Level ${refineryLevel} (+${refineryLevel * 15}% Refined yield)</small></button>
+        <button onclick="upgradeWorkshop('advanced')">Advanced Workshop - 800 Gold + 25 Mana Shards + 8 Divine Shards</button>
+    `;
+}
+
+function renderRecords() {
+    // Combat Stats
+    const combatEl = document.getElementById('combatStats');
+    if (combatEl) {
+        combatEl.innerHTML = `
+            <div><strong>Total Damage Dealt:</strong> ${Math.floor(game.totalDamageDealt || 0).toLocaleString()}</div>
+            <div><strong>Bosses Defeated:</strong> ${game.totalBossesDefeated || 0}</div>
+        `;
+    }
+
+    // Progression Stats
+    const progEl = document.getElementById('progressionStats');
+    if (progEl) {
+        progEl.innerHTML = `
+            <div><strong>Highest Level:</strong> ${game.highestLevel || 1}</div>
+            <div><strong>Dungeons Cleared:</strong> ${game.totalDungeonsCleared || 0}</div>
+            <div><strong>Divine Shards Earned:</strong> ${game.lifetimeDivineShards || 0}</div>
+        `;
+    }
+
+    // Collection Stats
+    const collEl = document.getElementById('collectionStats');
+    if (collEl) {
+        collEl.innerHTML = `
+            <div><strong>Slimes Tamed:</strong> ${game.lifetimeSlimesTamed || 0}</div>
+            <div><strong>Fusions Performed:</strong> ${game.totalFusions || 0}</div>
+            <div><strong>Evolutions Performed:</strong> ${game.totalEvolutions || 0}</div>
+        `;
+    }
+
+    // Other Stats
+    const otherEl = document.getElementById('otherStats');
+    if (otherEl) {
+        const bonusPercent = Math.round(((game.globalPowerBonus || 1) - 1) * 100);
+        otherEl.innerHTML = `
+            <div><strong>Global Power Bonus:</strong> +${bonusPercent}%</div>
+            <div><strong>Divine Convergences:</strong> ${game.divineConvergenceCount || 0}</div>
+        `;
+    }
+
+    // Trait Collection Stats (clean details with specific traits)
+    const traitEl = document.getElementById('traitStats');
+    if (traitEl) {
+        let totalTraits = 0;
+        let tierCount = { Common: 0, Uncommon: 0, Rare: 0, Epic: 0 };
+        let uniqueTraits = new Set();
+
+        if (game.slimes && game.slimes.length > 0) {
+            game.slimes.forEach(slime => {
+                if (slime.traits && slime.traits.length > 0) {
+                    totalTraits += slime.traits.length;
+                    slime.traits.forEach(traitKey => {
+                        uniqueTraits.add(traitKey);
+                        const def = TRAIT_DEFINITIONS[traitKey];
+                        if (def && tierCount[def.tier] !== undefined) {
+                            tierCount[def.tier]++;
+                        }
+                    });
+                }
+            });
+        }
+
+        let html = `
+            <div style="margin-bottom:8px;">
+                <strong>Total Traits:</strong> ${totalTraits} &nbsp;&nbsp; 
+                <strong>Unique:</strong> ${uniqueTraits.size}
+            </div>
+
+            <div style="margin-bottom:10px; font-size:11px;">
+                <strong>By Tier:</strong><br>
+                <span style="color:#9ca3af;">Common:</span> <strong>${tierCount.Common}</strong> &nbsp;
+                <span style="color:#4ade80;">Uncommon:</span> <strong>${tierCount.Uncommon}</strong> &nbsp;
+                <span style="color:#60a5fa;">Rare:</span> <strong>${tierCount.Rare}</strong> &nbsp;
+                <span style="color:#c084fc;">Epic:</span> <strong>${tierCount.Epic}</strong>
+            </div>
+        `;
+
+        if (uniqueTraits.size > 0) {
+            html += `<div style="margin-top:6px;"><strong>Your Traits:</strong></div>`;
+            html += `<div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:6px; max-height:80px; overflow-y:auto;">`;
+
+            uniqueTraits.forEach(traitKey => {
+                const def = TRAIT_DEFINITIONS[traitKey];
+                if (def) {
+                    const tierColor = def.tier === "Epic" ? "#c084fc" : 
+                                     def.tier === "Rare" ? "#60a5fa" : 
+                                     def.tier === "Uncommon" ? "#4ade80" : "#9ca3af";
+                    
+                    html += `<span onmouseenter="showTraitTooltip(this, '${traitKey}')" onmouseleave="hideTraitTooltip()"
+                        style="background:#113322; border:1px solid ${tierColor}; border-radius:6px; padding:3px 8px; font-size:10px; color:${tierColor}; cursor:help;">
+                        ${def.name}
+                    </span>`;
+                }
+            });
+
+            html += `</div>`;
+        } else {
+            html += `<div style="margin-top:8px; opacity:0.7; font-size:11px;">No traits yet. Higher rarity slimes are more likely to have traits.</div>`;
+        }
+
+        traitEl.innerHTML = html;
+    }
+}
+
+// ==================== SPEND STAT POINT ====================
+function spendStatPoint(stat) {
+    if (game.player.statPoints <= 0) {
+        log("No stat points left!");
+        return;
+    }
+    game.player.stats[stat] = (game.player.stats[stat] || 0) + 1;
+    game.player.statPoints--;
+    log(`+1 ${stat.charAt(0).toUpperCase() + stat.slice(1)}`);
+    updateUI();
+}
+
+// ==================== LOCK FUNCTIONS ====================
+function updateExploreLocks() {
+    UNLOCKABLE_AREAS.forEach(area => {
+        const card = document.getElementById(`card-${area.id}`);
+        const lockText = document.getElementById(`lock-${area.id}`);
+        if (!card || !lockText) return;
+        const btn = card.querySelector('button');
+        if (game.playerLevel >= area.level) {
+            card.classList.remove('locked');
+            if (btn) btn.disabled = false;
+            lockText.style.display = 'none';
+        } else {
+            card.classList.add('locked');
+            if (btn) btn.disabled = true;
+            lockText.style.display = 'block';
+            lockText.innerText = `🔒 Locked — Requires Player Level ${area.level}`;
+        }
+    });
+}
+
+function updateDungeonLocks() {
+    Object.keys(DUNGEON_REQUIREMENTS).forEach(id => {
+        const card = document.getElementById(`card-${id}`);
+        const lockText = document.getElementById(`lock-${id}`);
+        if (!card || !lockText) return;
+        const btn = card.querySelector('button');
+        const req = DUNGEON_REQUIREMENTS[id];
+        if (game.playerLevel >= req) {
+            card.classList.remove('locked');
+            if (btn) btn.disabled = false;
+            lockText.style.display = 'none';
+        } else {
+            card.classList.add('locked');
+            if (btn) btn.disabled = true;
+            lockText.style.display = 'block';
+            lockText.innerText = `🔒 Locked — Requires Player Level ${req}`;
+        }
+    });
+}
+
+function updateBossLocks() {
+    Object.keys(BOSS_REQUIREMENTS).forEach(id => {
+        const card = document.getElementById(`card-${id}`);
+        const lockText = document.getElementById(`lock-${id}`);
+        if (!card || !lockText) return;
+        const btn = card.querySelector('button');
+        const req = BOSS_REQUIREMENTS[id];
+        if (game.playerLevel >= req) {
+            card.classList.remove('locked');
+            if (btn) btn.disabled = false;
+            lockText.style.display = 'none';
+        } else {
+            card.classList.add('locked');
+            if (btn) btn.disabled = true;
+            lockText.style.display = 'block';
+            lockText.innerText = `🔒 Locked — Requires Player Level ${req}`;
+        }
+    });
+}
+
+// ==================== EXPLORATION (with Explorer Tonic support) ====================
+function exploreForest() { doExplore("Easy", "Forest", 5, 9); }
+function exploreTown() { doExplore("Easy", "Town", 5, 8); }
+function explorePlains() { doExplore("Easy", "Plains", 6, 10); }
+
+function exploreMountain() { if (!canExploreArea("mountain")) return; doExplore("Medium", "Mountain", 10, 14); }
+function exploreLake() { if (!canExploreArea("lake")) return; doExplore("Medium", "Crystal Lake", 9, 13); }
+function exploreCave() { if (!canExploreArea("cave")) return; doExplore("Medium", "Cave", 10, 15); }
+
+function exploreSwamp() { if (!canExploreArea("swamp")) return; doExplore("Hard", "Swamp", 16, 22); }
+function exploreRuins() { if (!canExploreArea("ruins")) return; doExplore("Hard", "Ancient Ruins", 15, 21); }
+function exploreGrove() { if (!canExploreArea("grove")) return; doExplore("Hard", "Mystic Grove", 17, 23); }
+
+function exploreVolcano() { if (!canExploreArea("volcano")) return; doExplore("Extreme", "Volcano", 24, 32); }
+function exploreTundra() { if (!canExploreArea("tundra")) return; doExplore("Extreme", "Frozen Tundra", 23, 31); }
+
+function exploreAbyss() { if (!canExploreArea("abyss")) return; doExplore("Extreme", "Abyssal Depths", 28, 38); }
+function exploreSpire() { if (!canExploreArea("spire")) return; doExplore("Extreme", "Celestial Spire", 30, 42); }
+function exploreVoid() { if (!canExploreArea("void")) return; doExplore("Extreme", "Void Realm", 32, 45); }
+function exploreGarden() { if (!canExploreArea("garden")) return; doExplore("Extreme", "Eternal Garden", 34, 48); }
+function exploreNexus() { if (!canExploreArea("nexus")) return; doExplore("Extreme", "Origin Nexus", 36, 52); }
+
+function canExploreArea(areaId) {
+    const area = UNLOCKABLE_AREAS.find(a => a.id === areaId);
+    if (!area) return false;
+    if (game.playerLevel < area.level) {
+        log(`Requires Player Level ${area.level}`);
+        return false;
+    }
+    return true;
+}
+
+function doExplore(difficulty, location, minExp, maxExp) {
+    if (!canPerformAction()) {
+        return;
+    }
+    let gotSlime = false;
+    let slimeChance = 0.42;
+
+    if (difficulty === "Medium") slimeChance = 0.52;
+    else if (difficulty === "Hard") slimeChance = 0.62;
+    else if (difficulty === "Extreme") slimeChance = 0.72;
+
+    // Explorer's Tonic bonus
+    let tonicBonus = 0;
+    if (game.explorerTonicCharges > 0) {
+        tonicBonus = 0.15;
+        slimeChance = Math.min(0.95, slimeChance + tonicBonus);
+        game.explorerTonicCharges--;
+        log("Explorer's Tonic active! Better results this exploration.");
+    }
+
+    if (Math.random() < slimeChance) {
+        const slime = generateRandomSlime(difficulty);
+        game.slimes.push(slime);
+        game.lifetimeSlimesTamed = (game.lifetimeSlimesTamed || 0) + 1;
+        gotSlime = true;
+    }
+
+    const expGain = Math.floor(minExp + Math.random() * (maxExp - minExp));
+    gainPlayerExp(expGain);
+
+    let resourcesGained = [];
+    let resChance = difficulty === "Easy" ? 0.68 : 
+                    difficulty === "Medium" ? 0.78 : 
+                    difficulty === "Hard" ? 0.85 : 0.92;
+
+    // Tonic also boosts resource drops
+    if (tonicBonus > 0) resChance = Math.min(0.98, resChance + 0.18);
+
+    if (Math.random() < resChance) {
+        const amt = 2 + Math.floor(Math.random() * 3);
+        game.resources.wood = (game.resources.wood || 0) + amt;
+        resourcesGained.push(`${amt} Wood`);
+    }
+    if (Math.random() < resChance * 0.85) {
+        const amt = 1 + Math.floor(Math.random() * 2);
+        game.resources.jelly = (game.resources.jelly || 0) + amt;
+        resourcesGained.push(`${amt} Jelly`);
+    }
+    if (Math.random() < resChance * 0.7) {
+        const amt = 1 + Math.floor(Math.random() * 2);
+        game.resources.herbs = (game.resources.herbs || 0) + amt;
+        resourcesGained.push(`${amt} Herbs`);
+    }
+    if (Math.random() < resChance * 0.6) {
+        const amt = 1 + Math.floor(Math.random() * 2);
+        game.resources.stone = (game.resources.stone || 0) + amt;
+        resourcesGained.push(`${amt} Stone`);
+    }
+
+    if (difficulty === "Hard" || difficulty === "Extreme") {
+        if (Math.random() < 0.55) {
+            game.resources.crystal = (game.resources.crystal || 0) + 2;
+            resourcesGained.push("2 Crystal");
+        }
+        if (Math.random() < 0.38) {
+            game.resources.arcaneDust = (game.resources.arcaneDust || 0) + 1;
+            resourcesGained.push("Arcane Dust");
+        }
+    }
+
+    let msg = `Explored ${location}.`;
+    if (gotSlime) msg += " Tamed a new slime!";
+    if (resourcesGained.length > 0) {
+        msg += ` Found: ${resourcesGained.join(", ")}.`;
+    } else if (!gotSlime) {
+        msg += " Nothing special this time.";
+    }
+
+    log(msg);
+    updateUI();
+}
+
+// ==================== DUNGEON & BOSS ====================
+function runDungeon(dungeonId) {
+    const req = DUNGEON_REQUIREMENTS[dungeonId];
+    if (game.playerLevel < req) { log(`Requires Player Level ${req}`); return; }
+
+    let successChance = 0.65 + (game.playerLevel * 0.004) + ((game.player.stats.combat || 0) * 0.025);
+    if (game.battleElixirActive) successChance += 0.25;
+
+    const success = Math.random() < Math.min(0.95, successChance);
+
+    if (success) {
+        const goldGain = 35 + Math.floor(game.playerLevel * 2.8);
+        const essenceGain = 4 + Math.floor(game.playerLevel / 6);
+        game.resources.gold = (game.resources.gold || 0) + goldGain;
+        game.resources.slimeEssence = (game.resources.slimeEssence || 0) + essenceGain;
+
+        if (dungeonId === 'abyssal_throne' || dungeonId === 'origin_core') {
+            const divine = 1;
+            game.resources.divineShards = (game.resources.divineShards || 0) + divine;
+            game.lifetimeDivineShards = (game.lifetimeDivineShards || 0) + divine;
+        }
+
+        if (Math.random() < 0.45) {
+            const newSlime = generateRandomSlime("Hard");
+            game.slimes.push(newSlime);
+            game.lifetimeSlimesTamed = (game.lifetimeSlimesTamed || 0) + 1;
+            log(`Dungeon success! Found ${goldGain} Gold, ${essenceGain} Essence, and tamed a ${newSlime.rarity} slime!`);
+        } else {
+            log(`Dungeon success! Found ${goldGain} Gold and ${essenceGain} Essence.`);
+        }
+        const dungeonDamage = 120 + (game.playerLevel * 8);
+        game.totalDamageDealt = (game.totalDamageDealt || 0) + dungeonDamage;
+        game.totalDungeonsCleared = (game.totalDungeonsCleared || 0) + 1;
+        gainPlayerExp(12 + Math.floor(game.playerLevel / 3));
+    } else {
+        log("Dungeon failed... better luck next time.");
+        // Small chance to use healing salve automatically on failure
+        if ((game.resources.healingSalve || 0) > 0 && Math.random() < 0.35) {
+            game.resources.healingSalve--;
+            log("Your Healing Salve activated automatically and softened the blow!");
+        }
+    }
+    game.battleElixirActive = false;
+    updateUI();
+}
+
+function prepareForBossFight(bossId) {
+    if (game.playerLevel < BOSS_REQUIREMENTS[bossId]) {
+        log(`Requires Player Level ${BOSS_REQUIREMENTS[bossId]}`); return;
+    }
+    currentBossId = bossId;
+    selectedSlimeIds = [];
+    const modal = document.getElementById('bossTeamModal');
+    const title = document.getElementById('modalBossTitle');
+    const info = document.getElementById('modalBossInfo');
+    const list = document.getElementById('slimeSelectionList');
+
+    const boss = bossData[bossId];
+    title.innerText = `Prepare for ${boss.name}`;
+    info.innerHTML = `<strong>Element:</strong> ${boss.element} • Base Power: ${boss.basePower}`;
+
+    list.innerHTML = '';
+    if (game.slimes.length === 0) {
+        list.innerHTML = '<p style="color:#ffaa66;">You have no slimes! Explore first.</p>';
+        return;
+    }
+
+    game.slimes.forEach((slime, index) => {
+        const div = document.createElement('div');
+        div.className = 'slime-select-item';
+        const adv = getAdvantageMultiplier(slime.element, boss.element);
+        let badge = '';
+        if (adv > 1) badge = `<span class="effect-badge effect-strong">+${Math.round((adv-1)*100)}%</span>`;
+        else if (adv < 1) badge = `<span class="effect-badge effect-weak">-${Math.round((1-adv)*100)}%</span>`;
+        else badge = `<span class="effect-badge effect-neutral">Neutral</span>`;
+
+        div.innerHTML = `
+            <div style="flex:1;">
+                <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.element} ${slime.rarity})<br>
+                <small>${slime.power} PWR</small> ${badge}
+            </div>
+        `;
+        div.onclick = () => toggleSlimeSelection(index, div);
+        list.appendChild(div);
+    });
+
+    modal.style.display = 'flex';
+    updateTeamSummary();
+}
+
+function getAdvantageMultiplier(slimeElement, bossElement) {
+    const chart = ELEMENT_CHART[slimeElement];
+    if (!chart) return 1.0;
+    if (chart.strong.includes(bossElement)) return 1.55;
+    if (chart.weak.includes(bossElement)) return 0.55;
+    return 1.0;
+}
+
+// Temporary buff from Slime Party
+function getPartyPowerMultiplier() {
+    if (game.partyPowerBonusUntil && Date.now() < game.partyPowerBonusUntil) {
+        return 1.10;
+    }
+    return 1.0;
+}
+
+// ==================== FAIR SLIME POWER SYSTEM ====================
+function recalculateSlimePower(slime) {
+    if (!slime || !slime.rarity) return;
+
+    const rarityMulti = {
+        "Common": 1.00,
+        "Uncommon": 1.32,
+        "Rare": 1.68,
+        "Epic": 2.15,
+        "Legendary": 2.85
+    }[slime.rarity] || 1.0;
+
+    // Much slower base growth + strong diminishing returns after level ~70
+    let levelPower;
+    if (slime.level <= 70) {
+        levelPower = 22 + (slime.level * 1.85);
+    } else {
+        const excess = slime.level - 70;
+        levelPower = 22 + (70 * 1.85) + (excess * 0.55) + (Math.sqrt(excess) * 4.2);
+    }
+
+    let power = Math.floor(levelPower * rarityMulti);
+
+    // Evolution boost (gentler now)
+    if (slime.evolved) {
+        power = Math.floor(power * 1.28);
+    }
+
+    // Very strong soft cap — power growth slows dramatically after ~1400-1600
+    if (power > 1350) {
+        const excess = power - 1350;
+        power = 1350 + Math.floor(Math.pow(excess, 0.58) * 7.5);
+    }
+
+    // Final hard comfort cap (very hard to reach legitimately now)
+    if (power > 8500) power = 8500 + Math.floor((power - 8500) * 0.15);
+
+    // Apply trait power bonuses
+    const traitMultiplier = applyTraitEffects(slime);
+    power = Math.floor(power * traitMultiplier);
+
+    slime.power = Math.max(12, power);
+}
+
+function toggleSlimeSelection(index, element) {
+    const id = game.slimes[index].id;
+    const pos = selectedSlimeIds.indexOf(id);
+    if (pos > -1) {
+        selectedSlimeIds.splice(pos, 1);
+        element.classList.remove('selected');
+    } else {
+        if (selectedSlimeIds.length >= 4) { log("Max 4 slimes allowed"); return; }
+        selectedSlimeIds.push(id);
+        element.classList.add('selected');
+    }
+    updateTeamSummary();
+}
+
+function updateTeamSummary() {
+    const summary = document.getElementById('summaryText');
+    const count = document.getElementById('selectionCount');
+    if (!summary || !count || !currentBossId) return;
+
+    if (selectedSlimeIds.length === 0) {
+        summary.innerHTML = 'Select up to 4 slimes to fight.';
+        count.innerText = '0 / 4 selected';
+        return;
+    }
+
+    const boss = bossData[currentBossId];
+    let totalPower = 0;
+    let avgMultiplier = 0;
+
+    selectedSlimeIds.forEach(id => {
+        const slime = game.slimes.find(s => s.id === id);
+        if (slime) {
+            const mult = getAdvantageMultiplier(slime.element, boss.element);
+            totalPower += slime.power * mult;
+            avgMultiplier += mult;
+        }
+    });
+
+    avgMultiplier = avgMultiplier / selectedSlimeIds.length;
+    const combatBonus = 1 + ((game.player.stats.combat || 0) * 0.04);
+    const elixirBonus = game.battleElixirActive ? 1.25 : 1.0;
+    const finalPower = Math.floor(totalPower * combatBonus * elixirBonus * game.globalPowerBonus);
+
+    let extraInfo = '';
+    if (game.partyPowerBonusUntil && Date.now() < game.partyPowerBonusUntil) {
+        extraInfo += `<br><span style="color:#aaff99;">✨ Slime Party buff active!</span>`;
+    }
+    if (game.battleElixirActive) {
+        extraInfo += `<br><span style="color:#ffdd77;">🧪 Battle Elixir active (+25%)</span>`;
+    }
+
+    summary.innerHTML = `
+        Team Power: <strong>${finalPower}</strong> vs Boss ${boss.basePower}<br>
+        Avg Element Multiplier: <strong>${avgMultiplier.toFixed(2)}x</strong><br>
+        Combat Bonus: +${(game.player.stats.combat || 0) * 4}%
+        ${extraInfo}
+        <br><small style="opacity:0.7;">Small variance will apply in actual fight.</small>
+    `;
+    count.innerText = `${selectedSlimeIds.length} / 4 selected`;
+}
+
+function startBossFight() {
+    if (!currentBossId || selectedSlimeIds.length === 0) { log("Select at least 1 slime"); return; }
+
+    const boss = bossData[currentBossId];
+    let totalPower = 0;
+    selectedSlimeIds.forEach(id => {
+        const slime = game.slimes.find(s => s.id === id);
+        if (slime) {
+            const mult = getAdvantageMultiplier(slime.element, boss.element);
+            totalPower += slime.power * mult;
+        }
+    });
+
+    const combatBonus = 1 + ((game.player.stats.combat || 0) * 0.04);
+    const elixirBonus = game.battleElixirActive ? 1.25 : 1.0;
+    const partyBonus = getPartyPowerMultiplier();
+
+    // Light combat variance (±8%) so fights feel more alive without breaking balance
+    const variance = 0.92 + Math.random() * 0.16;
+    const finalPower = Math.floor(totalPower * combatBonus * elixirBonus * game.globalPowerBonus * partyBonus * variance);
+
+    const success = finalPower > boss.basePower * 0.85;
+
+    if (success) {
+        const gold = Math.floor(80 + boss.basePower / 3);
+        const essence = Math.floor(8 + boss.basePower / 60);
+        game.resources.gold = (game.resources.gold || 0) + gold;
+        game.resources.shadowEssence = (game.resources.shadowEssence || 0) + essence;
+
+        let divineGain = 0;
+        if (currentBossId === 'storm_sovereign' || currentBossId === 'divine_colossus') {
+            divineGain = 2;
+        }
+        if (divineGain > 0) {
+            game.resources.divineShards = (game.resources.divineShards || 0) + divineGain;
+            game.lifetimeDivineShards = (game.lifetimeDivineShards || 0) + divineGain;
+        }
+
+        gainPlayerExp(30 + Math.floor(boss.basePower / 15));
+        game.totalDamageDealt = (game.totalDamageDealt || 0) + finalPower;
+        game.totalBossesDefeated = (game.totalBossesDefeated || 0) + 1;
+        log(`Victory over ${boss.name}! Your team performed well.`);
+    } else {
+        log(`Defeated by ${boss.name}... Your team reached ${finalPower} power vs needed ~${Math.floor(boss.basePower * 0.85)}. Try improving element matchups or team power.`);
+        if ((game.resources.healingSalve || 0) > 0 && Math.random() < 0.4) {
+            game.resources.healingSalve--;
+            log("Healing Salve helped your slimes recover after the tough fight!");
+        }
+    }
+
+    game.battleElixirActive = false;
+    closeBossModal();
+    updateUI();
+}
+
+function closeBossModal() {
+    document.getElementById('bossTeamModal').style.display = 'none';
+    currentBossId = null;
+    selectedSlimeIds = [];
+}
+
+// ==================== IMPROVED ALCHEMY SYSTEM ====================
+function processMaterial(type) {
+    if (!canPerformAction()) {
+        return;
+    }
+    const alchemyBonus = 1 + ((game.player.stats.alchemy || 0) * 0.08);
+    const refineryBonus = 1 + ((game.workshop.refinery || 0) * 0.15);
+
+    if (type === 'wood_to_scrolls') {
+        if ((game.resources.wood || 0) < 45) { log("Need 45 Wood"); return; }
+        game.resources.wood -= 45;
+        game.resources.trainingScrolls = (game.resources.trainingScrolls || 0) + Math.floor(10 * alchemyBonus);
+        log("Created Training Scrolls! Use them in training missions for bonus EXP.");
+    } 
+    else if (type === 'stone_to_elixir') {
+        if ((game.resources.stone || 0) < 30 || (game.resources.jelly || 0) < 15) { log("Need 30 Stone + 15 Jelly"); return; }
+        game.resources.stone -= 30; game.resources.jelly -= 15;
+        game.resources.battleElixir = (game.resources.battleElixir || 0) + Math.floor(8 * alchemyBonus);
+        log("Created Battle Elixir! Activate before tough fights.");
+    } 
+    else if (type === 'herbs_to_salve') {
+        if ((game.resources.herbs || 0) < 25 || (game.resources.jelly || 0) < 10) { log("Need 25 Herbs + 10 Jelly"); return; }
+        game.resources.herbs -= 25; game.resources.jelly -= 10;
+        game.resources.healingSalve = (game.resources.healingSalve || 0) + Math.floor(9 * alchemyBonus);
+        log("Created Healing Salve! Use it to boost your slimes' EXP.");
+    } 
+    else if (type === 'berries_to_fertility') {
+        if ((game.resources.jelly || 0) < 35 || (game.resources.berries || 0) < 20) { log("Need 35 Jelly + 20 Berries"); return; }
+        game.resources.jelly -= 35; game.resources.berries -= 20;
+        game.resources.fertilityPotion = (game.resources.fertilityPotion || 0) + Math.floor(6 * alchemyBonus);
+        log("Created Fertility Potion! Use when breeding for better rarity odds.");
+    } 
+    else if (type === 'essence_to_mana') {
+        if ((game.resources.slimeEssence || 0) < 15 || (game.resources.manaShards || 0) < 12) { log("Need 15 Slime Essence + 12 Mana Shards"); return; }
+        game.resources.slimeEssence -= 15; game.resources.manaShards -= 12;
+        game.resources.focusElixir = (game.resources.focusElixir || 0) + Math.floor(7 * alchemyBonus);
+        log("Created Mana Infused Gel!");
+    } 
+    else if (type === 'shadow_to_silk') {
+        if ((game.resources.shadowEssence || 0) < 20 || (game.resources.crystal || 0) < 10) { log("Need 20 Shadow Essence + 10 Crystal"); return; }
+        game.resources.shadowEssence -= 20; game.resources.crystal -= 10;
+        game.resources.shadowSilk = (game.resources.shadowSilk || 0) + Math.floor(5 * alchemyBonus);
+        log("Created Shadow Silk!");
+    } 
+    else if (type === 'make_power_serum') {
+        if ((game.resources.slimeEssence || 0) < 25 || (game.resources.manaShards || 0) < 15 || (game.resources.shadowEssence || 0) < 10) { log("Need 25 Slime Essence + 15 Mana Shards + 10 Shadow Essence"); return; }
+        game.resources.slimeEssence -= 25; game.resources.manaShards -= 15; game.resources.shadowEssence -= 10;
+        game.globalPowerBonus = (game.globalPowerBonus || 1) * 1.02;
+        log("Created Power Serum! Permanent +2% global power.");
+    } 
+    else if (type === 'make_alchemical_catalyst') {
+        if ((game.resources.refinedEssence || 0) < 30 || (game.resources.divineShards || 0) < 8 || (game.resources.arcaneDust || 0) < 15) { log("Need 30 Refined Essence + 8 Divine Shards + 15 Arcane Dust"); return; }
+        game.resources.refinedEssence -= 30; game.resources.divineShards -= 8; game.resources.arcaneDust -= 15;
+        game.resources.alchemicalCatalyst = (game.resources.alchemicalCatalyst || 0) + 1;
+        log("Created Alchemical Catalyst! Use in Breakthrough Research for big rewards.");
+    } 
+    else if (type === 'refine_essence') {
+        if ((game.resources.slimeEssence || 0) < 20 || (game.resources.jelly || 0) < 8) { log("Need 20 Slime Essence + 8 Jelly"); return; }
+        game.resources.slimeEssence -= 20; game.resources.jelly -= 8;
+        const yieldAmount = Math.floor(3 * alchemyBonus * refineryBonus);
+        game.resources.refinedEssence = (game.resources.refinedEssence || 0) + yieldAmount;
+        log(`Refined ${yieldAmount} Refined Essence! (Refinery bonus applied)`);
+    } 
+    else if (type === 'make_explorer_tonic') {
+        if ((game.resources.herbs || 0) < 20 || (game.resources.jelly || 0) < 15 || (game.resources.wood || 0) < 8) { log("Need 20 Herbs + 15 Jelly + 8 Wood"); return; }
+        game.resources.herbs -= 20; game.resources.jelly -= 15; game.resources.wood -= 8;
+        game.resources.explorerTonic = (game.resources.explorerTonic || 0) + Math.floor(3 * alchemyBonus);
+        game.explorerTonicCharges = (game.explorerTonicCharges || 0) + Math.floor(3 * alchemyBonus);
+        log("Created Explorer's Tonic! Use before exploring for better slime & resource drops.");
+    }
+    updateUI();
+}
+
+function transmuteGoldToMana() {
+    if ((game.resources.gold || 0) < 100) { log("Need 100 Gold"); return; }
+    game.resources.gold -= 100;
+    game.resources.manaShards = (game.resources.manaShards || 0) + 8;
+    log("Transmuted 100 Gold into 8 Mana Shards");
+    updateUI();
+}
+
+function transmuteManaToDivine() {
+    if ((game.resources.manaShards || 0) < 50) { log("Need 50 Mana Shards"); return; }
+    game.resources.manaShards -= 50;
+    game.resources.divineShards = (game.resources.divineShards || 0) + 3;
+    log("Transmuted 50 Mana Shards into 3 Divine Shards");
+    updateUI();
+}
+
+function useBattleElixir() {
+    if ((game.resources.battleElixir || 0) < 1) { log("No Battle Elixirs"); return; }
+    game.resources.battleElixir--;
+    game.battleElixirActive = true;
+    log("Battle Elixir activated! +25% power for next fight.");
+    updateUI();
+}
+
+// New: Use Healing Salve to boost all slimes
+function useHealingSalve() {
+    if ((game.resources.healingSalve || 0) < 1) { log("No Healing Salve!"); return; }
+    game.resources.healingSalve--;
+    
+    let totalExp = 0;
+    game.slimes.forEach(slime => {
+        const expGain = 20 + Math.floor(Math.random() * 12);
+        slime.exp = (slime.exp || 0) + expGain;
+        recalculateSlimePower(slime);
+        totalExp += expGain;
+    });
+    
+    log(`Used Healing Salve! All slimes gained a total of ${totalExp} EXP.`);
+    updateUI();
+}
+
+// New: Activate Explorer's Tonic charges
+function useExplorerTonic() {
+    if (game.explorerTonicCharges <= 0) {
+        log("No Explorer's Tonic charges! Craft some in Alchemy.");
+        return;
+    }
+    // The charges are already consumed during exploration
+    log(`Explorer's Tonic ready! You have ${game.explorerTonicCharges} charge(s). Explore now for boosted results.`);
+    updateUI();
+}
+
+// ==================== MANAGEMENT ====================
+function slimeParty() {
+    if (game.slimes.length === 0) { log("No slimes to party with!"); return; }
+
+    const now = Date.now();
+    const cooldownMs = 60 * 60 * 1000; // 60 minutes - pretty big cooldown
+    const timeSinceLast = now - (game.lastSlimePartyTime || 0);
+
+    if (timeSinceLast < cooldownMs) {
+        const remainingMs = cooldownMs - timeSinceLast;
+        const remainingMin = Math.ceil(remainingMs / 60000);
+        log(`Slime Party is on cooldown. Ready again in ~${remainingMin} minute(s).`);
+        return;
+    }
+
+    // Apply effects
+    game.slimes.forEach(s => {
+        s.exp = (s.exp || 0) + 14;
+        recalculateSlimePower(s);
+    });
+    gainPlayerExp(6);
+
+    // Bonus jelly from happy slimes playing
+    const jellyBonus = 3 + Math.floor(Math.random() * 4);
+    game.resources.jelly = (game.resources.jelly || 0) + jellyBonus;
+
+    // Temporary party buff: +10% team power for 90 minutes (great before dungeons/bosses)
+    game.partyPowerBonusUntil = now + (90 * 60 * 1000);
+
+    game.lastSlimePartyTime = now;
+
+    log(`🎉 Slime Party! All slimes gained EXP + made ${jellyBonus} Jelly. Your slimes are energized! (+10% power for 90 min)`);
+    updateUI();
+    updateSlimePartyButton();
+}
+
+function evolveSlime() {
+    const candidates = game.slimes.filter(s => s.level >= 10 && !s.evolved);
+    if (candidates.length === 0) { log("Need a level 10+ slime that hasn't evolved yet."); return; }
+    const slime = candidates[0];
+    slime.evolved = true;
+    slime.level += 4; // Evolution gives a solid level jump + power multiplier
+    recalculateSlimePower(slime);
+    game.totalEvolutions = (game.totalEvolutions || 0) + 1;
+    log(`${slime.name} evolved! Power greatly increased (now scales with level + rarity).`);
+    updateUI();
+}
+
+function fuseSlimes() {
+    const unlocked = game.slimes.filter(s => !s.locked);
+    if (unlocked.length < 2) {
+        log("Need at least 2 unlocked slimes to fuse.");
+        return;
+    }
+
+    // Find two unlocked slimes of the **same rarity**
+    let s1 = null;
+    let s2 = null;
+
+    for (let i = 0; i < unlocked.length; i++) {
+        for (let j = i + 1; j < unlocked.length; j++) {
+            if (unlocked[i].rarity === unlocked[j].rarity) {
+                s1 = unlocked[i];
+                s2 = unlocked[j];
+                break;
+            }
+        }
+        if (s1) break;
+    }
+
+    if (!s1 || !s2) {
+        log("You can only fuse slimes of the **same rarity**. Get two of the same rarity unlocked.");
+        return;
+    }
+
+    // Keep the stronger slime as the base, fuse the weaker one into it
+    let baseSlime, sacrificeSlime;
+    if (s1.power >= s2.power) {
+        baseSlime = s1;
+        sacrificeSlime = s2;
+    } else {
+        baseSlime = s2;
+        sacrificeSlime = s1;
+    }
+
+    const idxBase = game.slimes.findIndex(s => s.id === baseSlime.id);
+    const idxSacrifice = game.slimes.findIndex(s => s.id === sacrificeSlime.id);
+
+    const fused = { 
+        ...baseSlime, 
+        level: Math.max(baseSlime.level, sacrificeSlime.level) + 3, 
+        exp: 0,
+        locked: false,
+        evolved: baseSlime.evolved || sacrificeSlime.evolved
+    };
+    recalculateSlimePower(fused);
+
+    // Remove both (stronger one gets replaced by the fused version)
+    const toRemove = [idxBase, idxSacrifice].sort((a,b) => b-a);
+    toRemove.forEach(i => game.slimes.splice(i, 1));
+
+    game.slimes.push(fused);
+    game.totalFusions = (game.totalFusions || 0) + 1;
+    log(`Fused ${sacrificeSlime.rarity} slime into ${baseSlime.name}!`);
+    updateUI();
+}
+
+function openLockModal() {
+    const modal = document.getElementById('lockModal');
+    const list = document.getElementById('lockSlimeList');
+    list.innerHTML = '';
+
+    if (game.slimes.length === 0) {
+        list.innerHTML = '<p style="color:#ffaa66;">You have no slimes yet.</p>';
+        modal.style.display = 'flex';
+        return;
+    }
+
+    game.slimes.forEach((slime, index) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'background:#113322; border:2px solid #77ffaa; border-radius:8px; padding:10px; margin:6px 0; display:flex; justify-content:space-between; align-items:center;';
+
+        div.innerHTML = `
+            <div>
+                <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.element} ${slime.rarity})<br>
+                <small>${slime.power} PWR • ${slime.exp || 0} EXP</small>
+            </div>
+            <div>
+                <button onclick="toggleLock(${index}); openLockModal();" style="min-height:40px; width:auto; padding:8px 16px;">
+                    ${slime.locked ? '🔓 Unlock' : '🔒 Lock'}
+                </button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+
+    modal.style.display = 'flex';
+}
+
+function closeLockModal() {
+    document.getElementById('lockModal').style.display = 'none';
+    updateUI();
+}
+
+// ==================== IMPROVED SLIME MANAGEMENT MODAL ====================
+function openSlimeManagementModal() {
+    const modal = document.getElementById('slimeManagementModal');
+    const listContainer = document.getElementById('slimeManagementList');
+    const elementFilter = document.getElementById('slimeFilterElement');
+
+    // Populate element filter options
+    elementFilter.innerHTML = '<option value="">All Elements</option>';
+    const elementsList = [...new Set(game.slimes.map(s => s.element))];
+    elementsList.sort().forEach(el => {
+        const opt = document.createElement('option');
+        opt.value = el;
+        opt.textContent = el;
+        elementFilter.appendChild(opt);
+    });
+
+    modal.style.display = 'flex';
+    filterSlimeList(); // Initial render
+}
+
+function closeSlimeManagementModal() {
+    document.getElementById('slimeManagementModal').style.display = 'none';
+    updateUI();
+}
+
+function filterSlimeList() {
+    const search = (document.getElementById('slimeSearch')?.value || '').toLowerCase();
+    const sortMode = document.getElementById('slimeSort')?.value || 'power-desc';
+    const rarityFilter = document.getElementById('slimeFilterRarity')?.value || '';
+    const elementFilter = document.getElementById('slimeFilterElement')?.value || '';
+    const hasTraitOnly = document.getElementById('filterHasTrait')?.checked || false;
+
+    let filtered = game.slimes.filter(slime => {
+        const matchesSearch = !search || 
+            slime.name.toLowerCase().includes(search) || 
+            slime.element.toLowerCase().includes(search);
+        const matchesRarity = !rarityFilter || slime.rarity === rarityFilter;
+        const matchesElement = !elementFilter || slime.element === elementFilter;
+        const matchesTrait = !hasTraitOnly || (slime.traits && slime.traits.length > 0);
+        
+        return matchesSearch && matchesRarity && matchesElement && matchesTrait;
+    });
+
+    // Sorting
+    filtered.sort((a, b) => {
+        if (sortMode === 'power-desc') return b.power - a.power;
+        if (sortMode === 'power-asc') return a.power - b.power;
+        if (sortMode === 'level-desc') return b.level - a.level;
+        if (sortMode === 'rarity-desc') {
+            const order = { Legendary: 5, Epic: 4, Rare: 3, Uncommon: 2, Common: 1 };
+            return (order[b.rarity] || 0) - (order[a.rarity] || 0);
+        }
+        if (sortMode === 'name-asc') return a.name.localeCompare(b.name);
+        return 0;
+    });
+
+    // Render list
+    const container = document.getElementById('slimeManagementList');
+    container.innerHTML = '';
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding:20px; text-align:center; opacity:0.6;">No slimes match your filters.</div>';
+        return;
+    }
+
+    filtered.forEach((slime, index) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'background:#113322; border:2px solid #77ffaa; border-radius:8px; padding:10px 12px; margin:6px 0; display:flex; justify-content:space-between; align-items:center;';
+
+        let traitsHTML = '';
+        if (slime.traits && slime.traits.length > 0) {
+            const names = slime.traits.map(t => TRAIT_DEFINITIONS[t] ? TRAIT_DEFINITIONS[t].name : t).join(', ');
+            traitsHTML = `<div style="font-size:10px; color:#aaffcc; margin-top:2px;">${names}</div>`;
+        }
+
+        div.innerHTML = `
+            <div style="flex:1;">
+                <strong>${slime.name}</strong> 
+                <span style="font-size:11px; color:#ffdd88;">(Lv ${slime.level} ${slime.element} ${slime.rarity})</span><br>
+                <span style="font-size:12px;">${slime.power} PWR • ${slime.exp || 0} EXP</span>
+                ${traitsHTML}
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <button onclick="toggleLockFromManagement(${game.slimes.indexOf(slime)}); filterSlimeList();" 
+                    style="min-height:34px; padding:4px 10px; font-size:11px;">
+                    ${slime.locked ? '🔓 Unlock' : '🔒 Lock'}
+                </button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function toggleLockFromManagement(originalIndex) {
+    if (game.slimes[originalIndex]) {
+        game.slimes[originalIndex].locked = !game.slimes[originalIndex].locked;
+    }
+}
+
+function toggleLock(index) {
+    if (game.slimes[index]) {
+        game.slimes[index].locked = !game.slimes[index].locked;
+        const status = game.slimes[index].locked ? 'locked' : 'unlocked';
+        log(`${game.slimes[index].name} is now ${status}.`);
+    }
+}
+
+// Improved breeding with optional fertility potion
+function startBreeding(useFertility = false) {
+    if (game.slimes.length < 2) { log("Need at least 2 slimes to breed."); return; }
+    
+    if (useFertility) {
+        if ((game.resources.fertilityPotion || 0) < 1) {
+            log("No Fertility Potion! Craft some or use normal breeding.");
+            return;
+        }
+        game.resources.fertilityPotion--;
+    }
+    
+    const baby = generateRandomSlime("Medium", useFertility);
+    baby.level = 1;
+    game.slimes.push(baby);
+    game.lifetimeSlimesTamed = (game.lifetimeSlimesTamed || 0) + 1;
+    
+    let msg = `Breeding complete! You got a new ${baby.rarity} ${baby.element} slime!`;
+    if (useFertility) msg += " (Fertility Potion used - better rarity!)";
+    log(msg);
+    updateUI();
+}
+
+// ==================== TRAINING MISSION SYSTEM (with Training Scroll support) ====================
+function openTrainingModal() {
+    const modal = document.getElementById('trainingModal');
+    const missionList = document.getElementById('missionList');
+    const slimeSection = document.getElementById('slimeSelectionForTraining');
+
+    missionList.innerHTML = '';
+    slimeSection.style.display = 'none';
+    selectedMissionId = null;
+
+    TRAINING_MISSIONS.forEach(mission => {
+        const div = document.createElement('div');
+        div.className = 'mission-card';
+        div.innerHTML = `
+            <strong>${mission.name}</strong> <small style="color:#ffdd88;">(${mission.durationMinutes} min)</small><br>
+            <span style="font-size:12px;">${mission.desc}</span><br>
+            <span style="color:#aaff99; font-size:12px;">+${mission.expPerSlime} EXP per slime</span>
+        `;
+        div.onclick = () => selectMissionForTraining(mission.id, div);
+        missionList.appendChild(div);
+    });
+
+    modal.style.display = 'flex';
+}
+
+function selectMissionForTraining(missionId, element) {
+    document.querySelectorAll('#missionList .mission-card').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedMissionId = missionId;
+
+    const slimeSection = document.getElementById('slimeSelectionForTraining');
+    const list = document.getElementById('trainingSlimeList');
+    list.innerHTML = '';
+
+    const available = game.slimes.filter(s => !s.onMission);
+    if (available.length === 0) {
+        list.innerHTML = '<p style="color:#ffaa66;">All your slimes are currently on missions.</p>';
+        slimeSection.style.display = 'block';
+        return;
+    }
+
+    available.forEach(slime => {
+        const div = document.createElement('div');
+        div.className = 'slime-select-item';
+        div.innerHTML = `
+            <input type="checkbox" id="train-${slime.id}">
+            <label for="train-${slime.id}" style="flex:1; cursor:pointer;">
+                <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.element} ${slime.rarity})<br>
+                <small>${slime.power} PWR</small>
+            </label>
+        `;
+        list.appendChild(div);
+    });
+
+    slimeSection.style.display = 'block';
+}
+
+function confirmSendOnMission() {
+    if (!selectedMissionId) { log("Please select a mission first"); return; }
+
+    const mission = TRAINING_MISSIONS.find(m => m.id === selectedMissionId);
+    const checkboxes = document.querySelectorAll('#trainingSlimeList input[type="checkbox"]:checked');
+    const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.id.split('-')[1]));
+
+    if (selectedIds.length === 0) { log("Select at least one slime"); return; }
+
+    const maxSlots = 2 + Math.floor((game.player.stats.leadership || 0) / 4);
+    if (selectedIds.length > maxSlots) { log(`You can only send ${maxSlots} slimes (Leadership bonus included)`); return; }
+
+    // Check for Training Scroll usage
+    const useScroll = document.getElementById('useTrainingScrollCheck') && document.getElementById('useTrainingScrollCheck').checked;
+    let expMultiplier = 1.0;
+    
+    if (useScroll) {
+        if ((game.resources.trainingScrolls || 0) < 1) {
+            log("No Training Scrolls left! Sending without bonus.");
+        } else {
+            game.resources.trainingScrolls--;
+            expMultiplier = 1.5;
+            log("Training Scroll used! +50% EXP for this mission.");
+        }
+    }
+
+    const now = Date.now();
+    const endTime = now + (mission.durationMinutes * 60 * 1000);
+    const finalExp = Math.floor(mission.expPerSlime * expMultiplier);
+
+    let sent = 0;
+    game.slimes.forEach(slime => {
+        if (selectedIds.includes(slime.id) && !slime.onMission) {
+            slime.onMission = true;
+            slime.missionEndTime = endTime;
+            slime.currentMissionId = mission.id;
+            slime.currentMissionExp = finalExp;
+            sent++;
+        }
+    });
+
+    log(`Sent ${sent} slime(s) on ${mission.name} for ${mission.durationMinutes} minutes.`);
+    closeTrainingModal();
+    updateUI();
+}
+
+function closeTrainingModal() {
+    document.getElementById('trainingModal').style.display = 'none';
+    selectedMissionId = null;
+}
+
+// ==================== MISSION TIMER SYSTEM ====================
+function startMissionTimerSystem() {
+    if (missionTimerInterval) clearInterval(missionTimerInterval);
+    missionTimerInterval = setInterval(() => {
+        updateMissionTimersAndCompletions();
+    }, 1000);
+}
+
+function updateMissionTimersAndCompletions() {
+    let changed = false;
+    const now = Date.now();
+
+    game.slimes.forEach(slime => {
+        if (slime.onMission && slime.missionEndTime && now >= slime.missionEndTime) {
+            const expGain = slime.currentMissionExp || 100;
+            slime.exp = (slime.exp || 0) + expGain;
+            slime.level = Math.floor(1 + (slime.exp || 0) / 95);
+            recalculateSlimePower(slime); // Power now grows fairly with level
+            slime.onMission = false;
+            slime.missionEndTime = null;
+            slime.currentMissionId = null;
+            slime.currentMissionExp = null;
+            log(`${slime.name} returned from training! +${expGain} EXP`);
+            changed = true;
+        }
+    });
+
+    if (changed) {
+        updateUI();
+    } else {
+        renderHaven();
+    }
+    updateSlimePartyButton();
+}
+
+// ==================== WORKSHOP ====================
+function upgradeWorkshop(type) {
+    if (type === 'advanced') {
+        if ((game.resources.gold || 0) < 800 || (game.resources.manaShards || 0) < 25 || (game.resources.divineShards || 0) < 8) {
+            log("Need 800 Gold + 25 Mana Shards + 8 Divine Shards");
+            return;
+        }
+        game.resources.gold -= 800;
+        game.resources.manaShards -= 25;
+        game.resources.divineShards -= 8;
+        game.globalPowerBonus = (game.globalPowerBonus || 1) * 1.08;
+        log("Advanced Workshop upgraded! Permanent +8% global power.");
+        updateUI();
+        return;
+    }
+
+    const costGold = type === 'incubator' ? 120 : type === 'trainingHall' ? 150 : 180;
+    const costEssence = type === 'incubator' ? 8 : type === 'trainingHall' ? 10 : 12;
+
+    if ((game.resources.gold || 0) < costGold || (game.resources.refinedEssence || 0) < costEssence) {
+        log(`Need ${costGold} Gold and ${costEssence} Refined Essence`);
+        return;
+    }
+    game.resources.gold -= costGold;
+    game.resources.refinedEssence -= costEssence;
+
+    if (type === 'incubator') game.workshop.incubator = (game.workshop.incubator || 0) + 1;
+    else if (type === 'trainingHall') game.workshop.trainingHall = (game.workshop.trainingHall || 0) + 1;
+    else if (type === 'refinery') game.workshop.refinery = (game.workshop.refinery || 0) + 1;
+
+    log(`${type} upgraded!`);
+    updateUI();
+}
+
+// ==================== SHOP ====================
+function buyItem(item) {
+    if (!canPerformAction()) {
+        return;
+    }
+    if (item === 'jellyPack') {
+        if ((game.resources.gold || 0) < 50) { log("Not enough Gold"); return; }
+        game.resources.gold -= 50;
+        game.resources.jelly = (game.resources.jelly || 0) + 25;
+        log("Bought Jelly Pack!");
+    } else if (item === 'manaPack') {
+        if ((game.resources.gold || 0) < 120) { log("Not enough Gold"); return; }
+        game.resources.gold -= 120;
+        game.resources.manaShards = (game.resources.manaShards || 0) + 15;
+        log("Bought Mana Pack!");
+    } else if (item === 'woodPack') {
+        if ((game.resources.gold || 0) < 40) { log("Not enough Gold"); return; }
+        game.resources.gold -= 40;
+        game.resources.wood = (game.resources.wood || 0) + 30;
+        log("Bought Wood Pack!");
+    } else if (item === 'herbPack') {
+        if ((game.resources.gold || 0) < 35) { log("Not enough Gold"); return; }
+        game.resources.gold -= 35;
+        game.resources.herbs = (game.resources.herbs || 0) + 25;
+        log("Bought Herb Pack!");
+    }
+    updateUI();
+}
+
+// ==================== IMPROVED RESEARCH SYSTEM ====================
+function slimeResearch() {
+    if ((game.resources.jelly || 0) < 20 || (game.resources.herbs || 0) < 15 || (game.resources.slimeEssence || 0) < 5) {
+        log("Need 20 Jelly + 15 Herbs + 5 Slime Essence for research.");
+        return;
+    }
+    
+    game.resources.jelly -= 20;
+    game.resources.herbs -= 15;
+    game.resources.slimeEssence -= 5;
+
+    // Small permanent gain
+    const stats = ['taming', 'alchemy', 'combat', 'leadership', 'endurance'];
+    const randomStat = stats[Math.floor(Math.random() * stats.length)];
+    game.player.stats[randomStat] = (game.player.stats[randomStat] || 0) + 1;
+    
+    // Bonus stat point
+    game.player.statPoints = (game.player.statPoints || 0) + 1;
+
+    log(`Research complete! +1 ${randomStat} and +1 Stat Point. Your slimes feel smarter already.`);
+    updateUI();
+}
+
+function breakthroughResearch() {
+    const hasCatalyst = (game.resources.alchemicalCatalyst || 0) > 0;
+    const costJelly = hasCatalyst ? 40 : 60;
+    const costEssence = hasCatalyst ? 15 : 25;
+    const costDivine = hasCatalyst ? 2 : 4;
+
+    if ((game.resources.jelly || 0) < costJelly || 
+        (game.resources.slimeEssence || 0) < costEssence || 
+        (game.resources.divineShards || 0) < costDivine) {
+        log(`Need ${costJelly} Jelly + ${costEssence} Slime Essence + ${costDivine} Divine Shards.`);
+        return;
+    }
+
+    game.resources.jelly -= costJelly;
+    game.resources.slimeEssence -= costEssence;
+    game.resources.divineShards -= costDivine;
+
+    if (hasCatalyst) {
+        game.resources.alchemicalCatalyst--;
+    }
+
+    // Big reward
+    const roll = Math.random();
+    if (roll < 0.4) {
+        game.globalPowerBonus = (game.globalPowerBonus || 1) * 1.06;
+        log("Breakthrough! Permanent +6% Global Power Bonus!");
+    } else if (roll < 0.7) {
+        game.player.statPoints = (game.player.statPoints || 0) + 5;
+        log("Breakthrough! +5 Stat Points!");
+    } else {
+        // Big stat boost to random stats
+        const stats = ['taming', 'alchemy', 'combat', 'leadership', 'endurance'];
+        for (let i = 0; i < 2; i++) {
+            const stat = stats[Math.floor(Math.random() * stats.length)];
+            game.player.stats[stat] = (game.player.stats[stat] || 0) + 2;
+        }
+        log("Breakthrough! +2 to two random stats!");
+    }
+    
+    updateUI();
+    updateEndgameUI();
+}
+
+// ==================== ENDGAME ====================
+function updateEndgameUI() {
+    const milestoneList = document.getElementById('milestoneList');
+    if (milestoneList) {
+        let html = '';
+        MILESTONES.forEach(m => {
+            const unlocked = game.playerLevel >= m.level;
+            html += `<div style="margin:4px 0; color:${unlocked ? '#aaff99' : '#888'};">${unlocked ? '✅' : '🔒'} Level ${m.level}: ${m.name}</div>`;
+        });
+        milestoneList.innerHTML = html;
+    }
+
+    const lifetimeStats = document.getElementById('lifetimeStats');
+    if (lifetimeStats) {
+        lifetimeStats.innerHTML = `
+            Highest Player Level: <strong>${game.highestLevel}</strong><br>
+            Total Divine Shards Earned: <strong>${game.lifetimeDivineShards}</strong><br>
+            Total Slimes Tamed: <strong>${game.lifetimeSlimesTamed}</strong><br>
+            Current Global Power Bonus: <strong>${(game.globalPowerBonus * 100).toFixed(0)}%</strong>
+        `;
+    }
+
+    const voidFloor = document.getElementById('voidFloor');
+    if (voidFloor) voidFloor.innerText = game.voidTowerFloor;
+
+    const voidBtn = document.getElementById('voidTowerBtn');
+    if (voidBtn) {
+        if (game.playerLevel >= VOID_TOWER_MIN_LEVEL) {
+            voidBtn.disabled = false;
+            voidBtn.style.opacity = "1";
+        } else {
+            voidBtn.disabled = true;
+            voidBtn.style.opacity = "0.5";
+        }
+    }
+}
+
+function runVoidTower() {
+    if (game.playerLevel < VOID_TOWER_MIN_LEVEL) {
+        log(`The Endless Void Tower requires Player Level ${VOID_TOWER_MIN_LEVEL} to enter.`);
+        return;
+    }
+
+    const floor = game.voidTowerFloor;
+    const requiredPower = 420 + (floor * 235);
+
+    let teamPower = 0;
+    game.slimes.forEach(s => { teamPower += s.power; });
+
+    const combatBonus = 1 + ((game.player.stats.combat || 0) * 0.04);
+    const elixirBonus = game.battleElixirActive ? 1.25 : 1.0;
+    const partyBonus = getPartyPowerMultiplier();
+    const finalPower = Math.floor(teamPower * combatBonus * elixirBonus * game.globalPowerBonus * partyBonus);
+
+    const percentOfRequired = ((finalPower / requiredPower) * 100).toFixed(0);
+    log(`Floor ${floor} requires ~${requiredPower} power. Your team has ${finalPower} power (${percentOfRequired}% of required).`);
+
+    if (finalPower < requiredPower * 0.95) {
+        log(`Your team is too weak for floor ${floor}. You need at least 95% of the required power.`);
+        return;
+    }
+
+    const success = finalPower > requiredPower * 1.08;
+
+    if (success) {
+        const divineGain = 2 + Math.floor(floor / 5);
+        game.resources.divineShards = (game.resources.divineShards || 0) + divineGain;
+        game.lifetimeDivineShards = (game.lifetimeDivineShards || 0) + divineGain;
+        game.voidTowerFloor++;
+        log(`Cleared Void Tower Floor ${floor}! +${divineGain} Divine Shards.`);
+        gainPlayerExp(48 + floor * 7);
+    } else {
+        log(`Failed on Void Tower Floor ${floor}. You need stronger slimes, better element matchups, or higher Combat stat.`);
+    }
+
+    game.battleElixirActive = false;
+    updateUI();
+    updateEndgameUI();
+}
+
+function divineConvergence() {
+    const count = game.divineConvergenceCount || 0;
+    const baseCost = 30;
+    const cost = baseCost + (count * 18); // Scaling cost: 30, 48, 66, 84...
+
+    if ((game.resources.divineShards || 0) < cost) {
+        log(`Need ${cost} Divine Shards for Divine Convergence (you have ${game.resources.divineShards || 0}).`);
+        return;
+    }
+
+    game.resources.divineShards -= cost;
+    game.globalPowerBonus = (game.globalPowerBonus || 1) * 1.065; // Slightly lower per-use bonus
+    game.divineConvergenceCount = count + 1;
+
+    const bonusPercent = Math.round((game.globalPowerBonus - 1) * 100);
+    log(`Divine Convergence complete! Permanent +6.5% global power (Total: +${bonusPercent}%). Cost was ${cost} shards.`);
+    updateUI();
+    updateEndgameUI();
+}
+
+// ==================== HELPERS ====================
+function toggleSection(id) {
+    const content = document.getElementById(id + 'Content');
+    if (!content) return;
+    const header = content.previousElementSibling;
+
+    if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        if (header) header.classList.remove('collapsed');
+    } else {
+        content.classList.add('collapsed');
+        if (header) header.classList.add('collapsed');
+    }
+}
+
+function switchTab(tabIndex) {
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab' + tabIndex).classList.add('active');
+    document.querySelectorAll('.tab')[tabIndex].classList.add('active');
+    updateUI();
+
+    // Force render trait details when opening Records tab
+    if (tabIndex === 9) {
+        setTimeout(() => {
+            const traitEl = document.getElementById('traitStats');
+            if (traitEl && typeof renderRecords === 'function') {
+                // Re-render just the trait section if needed
+                renderRecords();
+            }
+        }, 50);
+    }
+}
+
+// Update alchemy bonus display
+function updateAlchemyBonus() {
+    const el = document.getElementById('alchemyBonus');
+    if (el) {
+        const bonus = Math.floor((game.player.stats.alchemy || 0) * 4);
+        el.innerText = bonus;
+    }
+}
+
+function updateSlimePartyButton() {
+    const btn = document.getElementById('slimePartyBtn');
+    const status = document.getElementById('slimePartyStatus');
+    if (!btn || !status) return;
+
+    const now = Date.now();
+    const cooldownMs = 60 * 60 * 1000;
+    const timeSinceLast = now - (game.lastSlimePartyTime || 0);
+
+    if (timeSinceLast < cooldownMs) {
+        const remainingMs = cooldownMs - timeSinceLast;
+        const min = Math.floor(remainingMs / 60000);
+        const sec = Math.floor((remainingMs % 60000) / 1000);
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
+        status.innerText = `⏳ Cooldown: ${min}m ${sec}s`;
+        status.style.color = "#ffaa66";
+    } else {
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        if (game.partyPowerBonusUntil && now < game.partyPowerBonusUntil) {
+            const remainingMin = Math.ceil((game.partyPowerBonusUntil - now) / 60000);
+            status.innerText = `✨ Party buff active! +10% power (${remainingMin}m left)`;
+            status.style.color = "#aaff99";
+        } else {
+            status.innerText = "";
+        }
+    }
+}
+
+// ==================== UPDATE UI (FULL RAF BATCHING) ====================
+function updateUI() {
+    scheduleUIUpdate();
+}
+
+const DOM = {};
+let uiUpdateScheduled = false;
+let uiDirty = false;
+
+function scheduleUIUpdate() {
+    uiDirty = true;
+    if (!uiUpdateScheduled) {
+        uiUpdateScheduled = true;
+        requestAnimationFrame(flushUIUpdates);
+    }
+}
+
+function flushUIUpdates() {
+    uiUpdateScheduled = false;
+    if (!uiDirty) return;
+    uiDirty = false;
+    renderHaven();
+    renderInventory();
+    updateSummary();
+    renderPlayer();
+    renderWorkshop();
+    updateEndgameUI();
+    updateAlchemyBonus();
+    
+    // Update tonic count
+    const tonicEl = document.getElementById('tonicCount');
+    if (tonicEl) tonicEl.innerText = `${game.explorerTonicCharges || 0} charges`;
+
+    updateSlimePartyButton();
+    renderRecords();
+}
+
+// ==================== INIT ====================
 function initGame() {
     const hadSave = loadGame();
+
     if (game.slimes.length === 0) {
         game.slimes.push(generateRandomSlime("Easy"));
         game.lifetimeSlimesTamed = 1;
     }
     if (!game.highestLevel) game.highestLevel = game.playerLevel || 1;
+
     updateUI();
     updateExploreLocks();
     updateDungeonLocks();
@@ -669,8 +2744,12 @@ function initGame() {
     updateEndgameUI();
     startMissionTimerSystem();
     loadDarkModePreference();
-    if (hadSave) log("✅ Game loaded from save.");
-    else log("✅ New game started. Enjoy your slime adventure!");
+
+    if (hadSave) {
+        log("✅ Game loaded from save. Alchemy is now deeply connected to every system!");
+    } else {
+        log("✅ New game started. Alchemy now powers your entire adventure!");
+    }
 }
 
 initGame();
