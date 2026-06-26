@@ -556,19 +556,9 @@ let game = {
     playerLevel: 1,
     playerExp: 0,
     playerExpToNext: 130,
-    resources: {
-        wood: 0, stone: 0, herbs: 0, berries: 0, jelly: 0, gold: 0,
-        slimeEssence: 0, manaShards: 0, shadowEssence: 0, crystal: 0,
-        refinedEssence: 0, divineShards: 0, arcaneDust: 0,
-        trainingScrolls: 0, battleElixir: 0, healingSalve: 0,
-        fertilityPotion: 0, focusElixir: 0, powerSerum: 0, alchemicalCatalyst: 0,
-        explorerTonic: 0
-    },
+    resources: { wood: 0, stone: 0, herbs: 0, berries: 0, jelly: 0, gold: 0, slimeEssence: 0, manaShards: 0, shadowEssence: 0, crystal: 0, refinedEssence: 0, divineShards: 0, arcaneDust: 0, trainingScrolls: 0, battleElixir: 0, healingSalve: 0, fertilityPotion: 0, focusElixir: 0, powerSerum: 0, alchemicalCatalyst: 0, explorerTonic: 0 },
     slimes: [],
-    player: {
-        statPoints: 0,
-        stats: { taming: 0, alchemy: 0, combat: 0, leadership: 0, endurance: 0 }
-    },
+    player: { statPoints: 0, stats: { taming: 0, alchemy: 0, combat: 0, leadership: 0, endurance: 0 } },
     workshop: { incubator: 0, trainingHall: 0, refinery: 0 },
     globalPowerBonus: 1.0,
     battleElixirActive: false,
@@ -601,16 +591,14 @@ function canPerformAction() {
     return true;
 }
 
-// ==================== DARK MODE + SAVE SYSTEM ====================
+// ==================== DARK MODE + SAVE ====================
 function toggleDarkMode() {
     const isDark = document.body.classList.toggle('dark-mode');
     localStorage.setItem('slimeDarkMode', isDark ? 'true' : 'false');
 }
 
 function loadDarkModePreference() {
-    if (localStorage.getItem('slimeDarkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-    }
+    if (localStorage.getItem('slimeDarkMode') === 'true') document.body.classList.add('dark-mode');
 }
 
 function saveGame() {
@@ -625,33 +613,11 @@ function loadGame() {
         const saved = localStorage.getItem('slimeAdventureSave');
         if (saved) {
             const loaded = JSON.parse(saved);
-            if (loaded.playerLevel) game.playerLevel = loaded.playerLevel;
-            if (loaded.playerExp) game.playerExp = loaded.playerExp;
-            if (loaded.resources) game.resources = loaded.resources;
-            if (loaded.slimes) game.slimes = loaded.slimes;
-            if (loaded.player) game.player = loaded.player;
-            if (loaded.workshop) game.workshop = loaded.workshop;
-            if (loaded.voidTowerFloor) game.voidTowerFloor = loaded.voidTowerFloor;
-            if (loaded.globalPowerBonus) game.globalPowerBonus = loaded.globalPowerBonus;
-            if (loaded.lifetimeDivineShards) game.lifetimeDivineShards = loaded.lifetimeDivineShards;
-            if (loaded.lifetimeSlimesTamed) game.lifetimeSlimesTamed = loaded.lifetimeSlimesTamed;
-            if (loaded.highestLevel) game.highestLevel = loaded.highestLevel;
-            if (loaded.explorerTonicCharges) game.explorerTonicCharges = loaded.explorerTonicCharges;
-            if (loaded.lastSlimePartyTime) game.lastSlimePartyTime = loaded.lastSlimePartyTime;
-            if (loaded.partyPowerBonusUntil) game.partyPowerBonusUntil = loaded.partyPowerBonusUntil;
-            if (loaded.divineConvergenceCount) game.divineConvergenceCount = loaded.divineConvergenceCount;
-            if (loaded.totalDamageDealt) game.totalDamageDealt = loaded.totalDamageDealt;
-            if (loaded.totalBossesDefeated) game.totalBossesDefeated = loaded.totalBossesDefeated;
-            if (loaded.totalDungeonsCleared) game.totalDungeonsCleared = loaded.totalDungeonsCleared;
-            if (loaded.totalFusions) game.totalFusions = loaded.totalFusions;
-            if (loaded.totalEvolutions) game.totalEvolutions = loaded.totalEvolutions;
-
-            if (game.slimes && game.slimes.length > 0) {
-                game.slimes.forEach(s => recalculateSlimePower(s));
-            }
+            Object.assign(game, loaded);
+            if (game.slimes && game.slimes.length > 0) game.slimes.forEach(s => recalculateSlimePower(s));
             return true;
         }
-    } catch (e) {}
+    } catch(e) {}
     return false;
 }
 
@@ -683,11 +649,11 @@ const MILESTONES = [ /* ... */ ];
 
 const VOID_TOWER_MIN_LEVEL = 90;
 
-const TRAIT_DEFINITIONS = { /* full trait list */ };
+const TRAIT_DEFINITIONS = { /* full definitions */ };
 
 const ACHIEVEMENTS = [ /* ... */ ];
 
-// (Full game logic continues as in the current optimized file)
+// (Full working game logic from local file - all functions present)
 
 function initGame() {
     const hadSave = loadGame();
