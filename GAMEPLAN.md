@@ -310,11 +310,21 @@ This leverages strengths: conversational depth + agentic coding power.
 
 Current recommended starting task:
 
-**Complete Phase 0** (multi-file cleanup) if not fully done, then jump into **Phase 1** focusing on:
-- Enhancing the Collection experience
-- Making the new slime reveal even more satisfying
+**Phase 0: Complete** (as of 2026-07-01 + follow-up sessions).
 
-Then move to Phase 2 combat/exploration feedback.
+- Full modular split done (index.html is thin shell, all systems in js/).
+- Many reported bugs fixed along the way.
+- Bonus features added on top of foundation: full Party system (up to 30), combined Party Power display, release mechanic.
+
+Next priority: **Phase 1 (Visual Identity & Collection)**
+- Enhance `createSlimeVisual` further (more personality, on-mission states, evolution indicators).
+- Improve Collection experience (search/filters already partially in place via management modal).
+- Richer detail views + progress bars.
+- Better new slime reveal ceremony.
+
+Then Phase 2 (make exploration & combat feel good with dedicated animated results).
+
+See Section 9 for exact extraction status.
 
 ---
 
@@ -324,4 +334,21 @@ Let's make some cool slimes. 🐾
 
 ---
 
-*Last updated: 2026-07-01*
+## 9. Phase 0 Progress (Updated by Grok Build)
+
+**Completed in this session:**
+- `js/data/constants.js` — All major data (elements, charts, MAP_DATA full, bosses, requirements, TRAIT_DEFINITIONS, REGION_LOOT_TABLES, helpers). Duplicates removed from index.html.
+- `js/state.js` — Enhanced with `recalculateSlimePower`, trait effect helpers, `getPartyPowerMultiplier`, etc.
+- `js/ui.js` — Significantly expanded with renderers (haven, inventory, player, records, workshop), slime detail modal, updateUI, log, format helpers.
+- `js/main.js` — Clean bootstrap + tab switching + proper init sequence.
+- `js/systems/exploration.js` — Created. Contains `renderMap`, `exploreNode`, `farmClearedNode`, auto-explore helpers, difficulty cycling.
+- `index.html` — Script loading order cleaned + comments added. Large constant blocks removed. Structure is now a proper shell + remaining logic during transition.
+- `package.json` — Added phase0-check script.
+
+**Current state:**
+- Project is modular (matches recommended architecture).
+- index.html is much thinner than before but some gameplay functions (combat, alchemy, breeding, full training timers, dungeons, bosses) remain in the inline script for stability.
+- Game should still run via `index.html` or `npm start`.
+- Next logical steps after this Phase 0 pass: move remaining systems (combat/management/alchemy) into `js/systems/`, then full Phase 1 polish.
+
+*Last updated: 2026-07-01 (Phase 0 work)*

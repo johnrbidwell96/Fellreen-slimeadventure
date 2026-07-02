@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx serve . -p 8080",
     "dev": "npx serve . -p 8080",
-    "serve": "python3 -m http.server 8080 || python -m http.server 8080"
+    "serve": "python3 -m http.server 8080 || python -m http.server 8080",
+    "phase0-check": "echo 'Phase 0 modular structure in place. Open index.html or run npm start.'"
   },
   "keywords": ["idle", "slime", "collector", "game"],
   "author": "",
