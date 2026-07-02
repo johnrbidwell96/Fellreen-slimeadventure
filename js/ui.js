@@ -15,6 +15,37 @@ function updateSummary() {
     if (expEl && window.game) expEl.innerText = `(${game.playerExp}/${game.playerExpToNext})`;
     if (goldEl && window.game) goldEl.innerText = (game.resources && game.resources.gold) || 0;
     if (divineEl && window.game) divineEl.innerText = (game.resources && game.resources.divineShards) || 0;
+
+    // Player XP progress bar (Phase 1 polish - Raid style feedback)
+    const topSection = document.querySelector('.top-section');
+    if (topSection && window.game) {
+        let xpContainer = topSection.querySelector('#playerXpContainer');
+        if (!xpContainer) {
+            xpContainer = document.createElement('div');
+            xpContainer.id = 'playerXpContainer';
+            xpContainer.style.cssText = 'margin: 4px 0 2px; font-size:10px;';
+            xpContainer.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:1px;">
+                    <span>Player XP</span>
+                    <span id="playerXpPercent"></span>
+                </div>
+                <div id="playerXpBar" style="height:6px; background:#112211; border-radius:3px; border:1px solid #556655; overflow:hidden;">
+                    <div class="fill" style="height:100%; background:linear-gradient(90deg, #aaff99, #77ffaa);"></div>
+                </div>
+            `;
+            const goldBar = topSection.querySelector('.gold-bar');
+            if (goldBar && goldBar.parentNode) {
+                goldBar.parentNode.insertBefore(xpContainer, goldBar);
+            }
+        }
+        const pExp = game.playerExp || 0;
+        const pNext = game.playerExpToNext || 130;
+        const pPct = Math.min(100, Math.floor((pExp / pNext) * 100));
+        const percentEl = xpContainer.querySelector('#playerXpPercent');
+        if (percentEl) percentEl.textContent = `${pPct}%`;
+        const barFill = xpContainer.querySelector('#playerXpBar .fill');
+        if (barFill) barFill.style.width = `${pPct}%`;
+    }
 }
 
 function updateHavenGrid() {
@@ -45,7 +76,7 @@ function updateHavenGrid() {
             const total = allSlimes.length;
             const officialParty = (typeof getParty === 'function' && getParty().length > 0);
             label.textContent = officialParty ? 
-                `🐾 Your Party (${pSize}/${maxP}) • Power: ${partyPower} • Total: ${total}` : 
+                `🐾 Your Party (${pSize}/${maxP})  •  Power ${partyPower}  •  Total ${total}` : 
                 `🐾 Top Slimes (set party in Manage) • Total: ${total}`;
         }
     }
@@ -66,8 +97,9 @@ function updateHavenGrid() {
         card.style.cssText = `
             display: flex; flex-direction: column; align-items: center; 
             background: #0a2a1a; border: 2px solid #77ffaa; border-radius: 10px; 
-            padding: 6px 4px 8px; min-width: 68px; max-width: 78px;
+            padding: 5px 4px 6px;
             cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, border-color .15s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         `;
         card.onmouseenter = () => { 
             card.style.transform = 'translateY(-2px) scale(1.03)'; 
@@ -81,22 +113,34 @@ function updateHavenGrid() {
             card.style.borderColor = '#77ffaa';
         };
 
-        // Larger, livelier visual for connection
-        const visual = createSlimeVisual(slime, { size: 'md', interactive: true, showTraits: !!(slime.traits && slime.traits.length) });
+        // Larger, livelier visual for connection (Raid premium feel)
+        const visual = createSlimeVisual(slime, { 
+            size: 'md', 
+            interactive: true, 
+            showTraits: !!(slime.traits && slime.traits.length), 
+            showElementBadge: false,
+            onMission: !!slime.onMission 
+        });
+        // Slightly smaller visual so the rarity frame fits nicely inside the small Haven cards
+        visual.style.width = '52px';
+        visual.style.height = '52px';
         
-        // Name makes them feel like individuals, not icons
+        // Name only - all other info (rarity via frame, level/power via badges) is shown visually
         const nameEl = document.createElement('div');
-        nameEl.style.cssText = 'font-size:10px; font-weight:700; margin-top:4px; text-align:center; max-width:72px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#ccffdd;';
+        nameEl.style.cssText = 'font-size:10px; font-weight:700; margin-top:3px; text-align:center; max-width:74px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#ccffdd;';
         nameEl.textContent = slime.name || 'Slime';
 
-        const metaEl = document.createElement('div');
-        metaEl.style.cssText = 'font-size:8.5px; opacity:0.85; text-align:center; line-height:1.1;';
-        const rarityColor = (typeof getRarityColor === 'function') ? getRarityColor(slime.rarity) : '#aaff99';
-        metaEl.innerHTML = `<span style="color:${rarityColor};">${slime.rarity || 'Common'}</span><br>Lv${slime.level||1} • ${slime.power||0} PWR`;
+        // Mini XP bar on party cards
+        const exp = slime.exp || 0;
+        const nextExp = 95;
+        const pct = Math.min(100, Math.floor((exp / nextExp) * 100));
+        const bar = document.createElement('div');
+        bar.style.cssText = 'width:100%; height:5px; background:#112211; border-radius:3px; overflow:hidden; margin-top:2px;';
+        bar.innerHTML = `<div style="height:100%; width:${pct}%; background:linear-gradient(90deg, #77ffaa, #aaffcc);"></div>`;
 
         card.appendChild(visual);
         card.appendChild(nameEl);
-        card.appendChild(metaEl);
+        card.appendChild(bar);
 
         card.onclick = () => showSlimeDetail(slime);
         grid.appendChild(card);
@@ -205,24 +249,48 @@ function openSlimeDetail(slime) {
 
     const vis = createSlimeVisual(slime, { size: 'xl', showTraits: true });
 
+    const evoLevel = slime.evolutionLevel || 0;
     const traitList = (slime.traits && slime.traits.length)
-        ? slime.traits.map(t => (window.TRAIT_DEFINITIONS && TRAIT_DEFINITIONS[t]) ? TRAIT_DEFINITIONS[t].name : t).join(', ')
-        : 'None yet';
+        ? slime.traits.map(t => {
+            const def = (window.TRAIT_DEFINITIONS && TRAIT_DEFINITIONS[t]) ? TRAIT_DEFINITIONS[t] : {name: t, tier: 'Common'};
+            const tierColor = def.tier === "Epic" ? "#c084fc" : (def.tier === "Rare" ? "#60a5fa" : (def.tier === "Uncommon" ? "#4ade80" : "#9ca3af"));
+            return `<span style="background:#113322; border:1px solid ${tierColor}; border-radius:4px; padding:1px 5px; font-size:10px; color:${tierColor}; margin:1px;">${def.name}</span>`;
+          }).join(' ')
+        : '<span style="opacity:0.6;">None yet</span>';
 
     const info = document.createElement('div');
     info.style.cssText = 'width:100%; max-width:320px;';
+    
+    // XP Progress bar (Raid-style collector polish)
+    const exp = slime.exp || 0;
+    const nextExp = 95; // from progression logic
+    const expPercent = Math.min(100, Math.floor((exp / nextExp) * 100));
+    
     info.innerHTML = `
-        <div style="font-size:15px; margin:6px 0;"><strong>${slime.name}</strong> <span style="opacity:0.7;">(${slime.element})</span></div>
-        <div style="margin-bottom:8px;">
-            <span style="color:${getRarityColor(slime.rarity)}; font-weight:700;">${slime.rarity}</span>
-            ${slime.evolved ? ' <span style="color:#ffdd77;">★ EVOLVED</span>' : ''}
-            ${slime.locked ? ' <span style="color:#ffaa66;">🔒 LOCKED</span>' : ''}
-            ${(typeof isInParty === 'function' && isInParty(slime.id)) ? ' <span style="color:#ffdd77;">★ IN PARTY</span>' : ''}
+        <div style="font-size:16px; margin:4px 0; font-weight:700;">${slime.name}</div>
+        <div style="margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+            <span style="color:${getRarityColor(slime.rarity)}; font-weight:700; font-size:13px;">${slime.rarity}</span>
+            ${evoLevel > 0 ? ` <span style="color:#ffdd77; font-size:11px;">${'★'.repeat(evoLevel)}</span>` : ''}
+            ${slime.locked ? ' <span style="color:#ffaa66; font-size:11px;">🔒 LOCKED</span>' : ''}
+            ${(typeof isInParty === 'function' && isInParty(slime.id)) ? ' <span style="color:#ffdd77; font-size:11px;">★ IN PARTY</span>' : ''}
+            ${(slime.onMission) ? ' <span style="color:#ffaa66; font-size:11px;">⏳ ON MISSION</span>' : ''}
         </div>
-        <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:8px; padding:8px; font-size:12px; line-height:1.4; text-align:left;">
-            Level ${slime.level || 1} • ${slime.power} PWR<br>
-            EXP: ${slime.exp || 0}<br>
-            <span style="opacity:0.85;">Traits: ${traitList}</span>
+        ${evoLevel > 0 ? `<div style="font-size:10px; color:#ffdd77; margin-bottom:4px;">Evolution Level: ${evoLevel}★</div>` : ''}
+        
+        <!-- Premium XP Bar -->
+        <div style="margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; font-size:10px; margin-bottom:2px;">
+                <span>Lv ${slime.level || 1}</span>
+                <span>${exp} / ${nextExp} EXP</span>
+            </div>
+            <div style="height:10px; background:#112211; border-radius:999px; border:1px solid #556655; overflow:hidden;">
+                <div style="width:${expPercent}%; height:100%; background:linear-gradient(90deg, #77ffaa, #aaffcc); transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+        
+        <div style="background:#0a2a1a; border:2px solid #77ffaa; border-radius:8px; padding:8px; font-size:12px; line-height:1.35; text-align:left;">
+            <strong>${slime.power}</strong> PWR<br>
+            <span style="opacity:0.85; display:block; margin-top:4px;">Traits: ${traitList}</span>
         </div>
     `;
 
@@ -271,15 +339,17 @@ function quickEvolveFromDetail() {
     if (!window.game || !currentDetailSlimeId) return;
     const s = game.slimes.find(x => x.id === currentDetailSlimeId);
     if (!s) return;
-    if (s.level < 10 || s.evolved) {
-        if (typeof log === 'function') log('Needs Lv10+ and not yet evolved.');
+    const evo = s.evolutionLevel || 0;
+    const reqLevel = 10 + (evo * 5);
+    if (s.level < reqLevel || evo >= 5) {
+        if (typeof log === 'function') log(`Needs Lv${reqLevel}+ and not yet at 5★.`);
         return;
     }
-    s.evolved = true;
+    s.evolutionLevel = evo + 1;
     s.level += 4;
     if (typeof recalculateSlimePower === 'function') recalculateSlimePower(s);
     if (window.game) game.totalEvolutions = (game.totalEvolutions || 0) + 1;
-    if (typeof log === 'function') log(`${s.name} evolved!`);
+    if (typeof log === 'function') log(`${s.name} evolved to ${s.evolutionLevel}★!`);
     closeSlimeDetailModal();
     if (typeof updateUI === 'function') updateUI();
     setTimeout(() => {
@@ -337,8 +407,11 @@ function renderInventory() {
         const val = (game.resources && game.resources[item.key]) || 0;
         if (val > 0) {
             const div = document.createElement('div');
-            div.style.cssText = 'background:#113322; border:2px solid #77ffaa; border-radius:8px; padding:6px 8px; display:flex; align-items:center; gap:6px;';
-            div.innerHTML = `<span style="font-size:16px;">${item.icon}</span><div><strong>${item.label}</strong><br><span style="font-size:12px;">${val}</span></div>`;
+            div.className = 'inventory-item';
+            div.style.cssText = 'background:#0f2a20; border:2px solid #77ffaa; border-radius:10px; padding:8px; display:flex; align-items:center; gap:8px; transition: transform 0.1s;';
+            div.innerHTML = `<span style="font-size:20px;">${item.icon}</span><div style="flex:1;"><strong style="font-size:12px;">${item.label}</strong><br><span style="font-size:13px; color:#aaff99;">${val}</span></div>`;
+            div.onmouseenter = () => div.style.transform = 'scale(1.02)';
+            div.onmouseleave = () => div.style.transform = '';
             container.appendChild(div);
         }
     });
@@ -357,6 +430,12 @@ function renderPlayer() {
         <div class="stat-row"><strong>Leadership:</strong> ${s.leadership || 0} <small>(+1 party slot per point, up to 30)</small></div>
         <div class="stat-row"><strong>Endurance:</strong> ${s.endurance || 0} <small>(+${(s.endurance||0) * 5}% daily rewards)</small></div>
         <div class="stat-row"><strong>Party Power:</strong> ${typeof getPartyPower === 'function' ? getPartyPower() : 0} <small>(sum of your active party)</small></div>
+        <div class="stat-row">
+            <strong>Player XP:</strong> ${game.playerExp || 0} / ${game.playerExpToNext || 130}
+            <div style="height:4px; background:#112211; border-radius:2px; margin-top:2px; overflow:hidden;">
+                <div style="height:100%; width:${Math.min(100, Math.floor(((game.playerExp||0) / (game.playerExpToNext||130)) * 100)) }%; background:#aaff99;"></div>
+            </div>
+        </div>
     `;
 }
 

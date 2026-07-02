@@ -50,11 +50,9 @@ function updateDungeonLocks() {
         const g = window.game || {};
         if ((g.playerLevel || 1) >= req) {
             card.classList.remove('locked');
-            if (btn) btn.disabled = false;
             lockText.style.display = 'none';
         } else {
             card.classList.add('locked');
-            if (btn) btn.disabled = true;
             lockText.style.display = 'block';
             lockText.innerText = `🔒 Locked — Requires Player Level ${req}`;
         }
@@ -72,11 +70,9 @@ function updateBossLocks() {
         const g = window.game || {};
         if ((g.playerLevel || 1) >= req) {
             card.classList.remove('locked');
-            if (btn) btn.disabled = false;
             lockText.style.display = 'none';
         } else {
             card.classList.add('locked');
-            if (btn) btn.disabled = true;
             lockText.style.display = 'block';
             lockText.innerText = `🔒 Locked — Requires Player Level ${req}`;
         }

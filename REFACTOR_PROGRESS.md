@@ -97,6 +97,36 @@ This file sits alongside `GAMEPLAN.md` and records **concrete progress** made to
 
 All core Phase 0 goals achieved. The codebase is now safe and maintainable for future work.
 
+## Phase 1 Progress (Visual Identity & Collection)
+
+Significant work done:
+- `createSlimeVisual` heavily upgraded: rarity frames, power/level badges, stronger on-mission state (dim + overlay), evolution stars, body/element shape variation, better animations/shimmers.
+- Top Haven bar: party-only preview with visuals + mini XP bars. No redundant text.
+- Management collection: now a proper grid of nice Raid-style cards (not rows), each with visual + mini XP bar + controls. Text minimized to name + indicators only.
+- Detail modal: XP progress bar + clean info.
+- Reveal improved.
+- Party Power prominently displayed.
+- Redundancy cleaned.
+
+Recent continuation:
+- Converted full "All Slimes" view to grid cards with XP bars.
+- Added XP bars to top party cards.
+- Enhanced on-mission visuals and element personality shapes.
+- Traits as nice badges in detail.
+- Player XP bar in top summary.
+- Reveal callouts.
+- Fixed rarity frame sizing for cards.
+- Multi-star evolution system: 1★ to 5★ (level req 10/15/20/25/30, power scaling, visual ★ indicators, UI updates everywhere, migration).
+
+Remaining high-impact Phase 1 (per GAMEPLAN):
+- More personality in createSlimeVisual (faces, stronger idle/on-mission animations).
+- Richer detail (more stats, power context).
+- Better new slime (more ceremony + callouts - partial).
+- Global visual language (apply to inventory, mission UI, etc.).
+- More consistent progress bars.
+
+Next suggested: More visual personality or global language.
+
 ### Additional work completed after initial refactor
 - Full **Party system** implemented:
   - Select/deselect slimes into party (max 10 base → up to 30 with Leadership investment).
@@ -112,3 +142,108 @@ All core Phase 0 goals achieved. The codebase is now safe and maintainable for f
 - Many small QoL improvements (better labels, clickable hints, dynamic max party in UI).
 
 Phase 0 foundation is solid. Ready to move on.
+
+---
+
+## 2026-07-02 Session Summary
+
+**Continued Phase 1: Visual Identity & Collection**
+
+### Key Gameplay Updates (Popups & Feedback)
+- Front-and-center popups for exploration results:
+  - `showResourceGain` (generalized into `showGainModal`) for materials with icons (🪵 Wood, 🫐 Jelly, etc.).
+  - Always shows resources gained, even when also taming a new slime (resources popup first, then chains to slime reveal on "Continue").
+  - Removed bottom toast (`window.log`) for exploration resource results — now only console for debug + nice modals.
+- Dungeons now use nice popups:
+  - `runDungeon` builds gains (Gold, Essence, Divine, etc.) and calls `showGainModal` with dungeon-specific title (e.g. "✅ Forest Depths SUCCESS!").
+  - Resources shown in popup even when taming a slime during dungeon run (chains reveal).
+  - Bottom toasts removed for main dungeon success/fail/ resources.
+  - Still toasts for edge cases like "Requires level" or salve activation.
+- Consistent with exploration: resources always get the visual popup treatment.
+- Updated `showGainModal` to gracefully handle empty gains (shows "No additional rewards" message).
+
+### Visual & Collection Polish (Phase 1)
+- `createSlimeVisual` further enhanced:
+  - Element-specific mouths (e.g. wavy for Water, jagged for Fire/Lightning).
+  - Blink animations on eyes.
+  - Varied eye styles per element.
+  - Stronger on-mission (more dim + overlay).
+  - Multi-star evolution indicators (1★ to 5★ with color/size scaling).
+- Management "All Slimes" collection converted to proper grid of Raid-style cards (not rows), each with:
+  - Visual (with frame, badges, no redundant element icon in dense views).
+  - Name + party indicator + evolution stars.
+  - Mini XP progress bar.
+  - Controls (select, party toggle, lock, view, release).
+  - Rarity-colored card borders.
+- Top Haven (party) bar:
+  - Switched to CSS grid for better army display.
+  - Cards include visuals + mini XP bars.
+  - Clean name only (info via badges/frames).
+- Detail modal: XP bar, traits as tiered badges, on-mission status, multi-star evolution display.
+- Inventory items polished with consistent premium card styles (matching backgrounds, borders, hovers).
+- Training selection now renders with small slime visuals.
+- Reveal modal: added callouts (rare find, strong, traits, etc.).
+
+### Multi-Star Evolution System
+- Slimes now evolve to 1★–5★ (not binary).
+- Requirements scale: Lv 10 for 1★, +5 per additional star (up to Lv 30 for 5★).
+- Each star applies compounding power boost.
+- Full visual support (multiple ★ on slime).
+- Updated: evolveSlime (in management + detail), fusion (carries highest), generation (starts at 0), power calc, all UIs (detail, collection cards, training, lock list), migration from old saves (`evolved` → 1★).
+- Bonus +4 levels on each evolve.
+
+### Other
+- First dungeon (Forest Depths) req lowered to 1 (always available at start).
+- Buttons (dungeons, save, etc.) fixed in prior sessions; popups now provide the main feedback.
+- Removed redundant text below visuals (replaced by frames, badges, stars).
+- Fixed rarity frame sizing/alignment issues (now properly hugs the shaped blob, not misaligned glow).
+
+**GAMEPLAN Alignment**:
+- Phase 0: Complete (modular, thin shell).
+- Phase 1 heavily advanced: visuals with personality, collection as nice cards, progress bars, global visual language started, new slime polish (partial).
+- Popups address "Exploration and Combat stop being 'text appears at bottom'" (Phase 2 overlap, but great for feel).
+
+Remaining Phase 1 (per GAMEPLAN):
+- Even more personality (faces, more idle effects).
+- Richer detail views.
+- Better new slime ceremony + callouts (started).
+- Apply frames/styles more broadly (inventory partially done, other UI).
+- More progress bars.
+
+Phase 2 next (core loops): dedicated exploration result (partially via popups), combat animations, etc.
+
+**How to continue later**:
+- Open index.html.
+- Explore to see resource popup (always, even with slime).
+- Run dungeons to see success/fail popup with gains + chained reveal if slime.
+- Use management to see grid cards with stars/XP.
+- Evolve slimes multiple times up to 5★.
+- Check top bar for party power + visuals.
+
+All core recent features documented. Codebase ready for more Phase 1 polish or Phase 2.
+
+---
+
+## 2026-07-02 Wrap-up (for next session)
+
+**Gameplay updated**:
+- Small polish: improved cross-region unlock feedback + reliable re-render of map region switcher buttons immediately after clearing a gateway node (e.g. cm3 now reliably enables Shadowfen button without extra clicks/tab switches).
+- All popup/resource feedback, multi-evolution (★ scaling), party (up to 30), no-bottom-toasts, and visual card grid changes from session are live and stable.
+- Save/import/export/dark/save buttons fully functional.
+- Forest Depths and early dungeons always accessible; popups for all gains (with icons and chaining).
+
+**Progress file + roadmap updated**:
+- This file (REFACTOR_PROGRESS.md) and GAMEPLAN.md refreshed with current status so future sessions can resume cleanly without context loss.
+- README updated for structure accuracy.
+- Phase 0 fully complete. Phase 1 ~80% (strong visuals + collection + popups + evo). Ready to continue with more personality/animation in visuals or move to Phase 2 dedicated result sequences.
+
+**To pick up**:
+1. cd to the Slime Adventure folder.
+2. Open `index.html` (or `npm start`).
+3. Play a bit: clear a few nodes, run a dungeon, tame/evolve some slimes, manage party.
+4. Read the top of GAMEPLAN.md + this file's latest sections.
+5. Choose next: finish Phase 1 visual personality or start Phase 2 (exploration/combat spectacle).
+
+Ready for seamless continuation. 🐾
+
+*Session ended 2026-07-02*

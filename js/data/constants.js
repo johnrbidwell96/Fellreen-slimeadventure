@@ -73,7 +73,7 @@ const UNLOCKABLE_AREAS = [
 ];
 
 const DUNGEON_REQUIREMENTS = {
-    forest_depths: 3, crystal_caverns: 8, shadow_abyss: 18, ancient_temple: 30,
+    forest_depths: 1, crystal_caverns: 8, shadow_abyss: 18, ancient_temple: 30,
     molten_core: 42, glacial_spire: 48, thunder_sanctum: 55, abyssal_throne: 68, origin_core: 82
 };
 

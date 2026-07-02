@@ -247,7 +247,7 @@ function exploreNode(region, nodeId, difficulty) {
             if (p && !p.unlocked.includes("sf1")) {
                 p.unlocked.push("sf1");
                 if (typeof window.log === 'function') {
-                    window.log("🌿 Shadowfen Swamp unlocked! The button in the map switcher should no longer be greyed out.");
+                    window.log("🌿 Shadowfen Swamp unlocked! Switch to Map tab / refresh to see new region button.");
                 } else {
                     console.log("New region unlocked: Shadowfen Swamp!");
                 }
@@ -268,10 +268,11 @@ function exploreNode(region, nodeId, difficulty) {
             }
         }
 
-        // Re-render the map (current view or greenwild) so the region switcher buttons update their enabled/grey state immediately.
+        // Re-render the map (current view) so the region switcher buttons update their enabled/grey state immediately.
         // This ensures the Shadowfen (and later) buttons un-grey after clearing the prereq node.
         const viewToShow = window.currentMapRegion || region || 'greenwild';
-        renderMap(viewToShow);
+        if (typeof renderMap === 'function') renderMap(viewToShow);
+        if (typeof window.updateMapQuickStats === 'function') window.updateMapQuickStats();
     }, 900);
 }
 
@@ -300,7 +301,7 @@ function farmClearedNode(region, node) {
         }
     }
 
-    if (typeof window.log === 'function') window.log(`Farmed ${node.name}`);
+    console.log(`Farmed ${node.name}`); // no bottom toast, use popups for resource feedback
     setTimeout(() => {
         if (typeof window.renderMap === 'function') window.renderMap(region);
     }, 400);
@@ -437,7 +438,7 @@ function generateRandomSlime(difficulty = "Easy", useFertility = false) {
         exp: 0,
         power: 0,
         rarity: rarity,
-        evolved: false,
+        evolutionLevel: 0,
         onMission: false
     };
 
@@ -517,7 +518,7 @@ function doExplore(difficulty, location, minExp, maxExp) {
         tonicBonus = 0.15;
         slimeChance = Math.min(0.95, slimeChance + tonicBonus);
         g2.explorerTonicCharges--;
-        (window.log || console.log)("Explorer's Tonic active! Better results this exploration.");
+        console.log("Explorer's Tonic active! Better results this exploration."); // console to keep bottom clean; popups for main gains
     }
 
     const roll = Math.random();
@@ -585,21 +586,31 @@ function doExplore(difficulty, location, minExp, maxExp) {
 
     let msg = `Explored ${location}.`;
     if (gotSlime) msg += " Tamed a new slime!";
-    if (resourcesGained.length > 0) {
-        msg += ` Found: ${resourcesGained.join(", ")}.`;
-    } else if (!gotSlime) {
+    if (!gotSlime && resourcesGained.length === 0) {
         msg += " Nothing special this time.";
     }
 
-    (window.log || console.log)(msg);
+    console.log(msg); // no bottom toast for exploration results — front-and-center popups (showResourceGain / reveal) are the only UI feedback for resources and slimes
     (window.updateUI || (() => {}))();
-
-    if (partyPower > 500 && Math.random() < 0.3) {
-        (window.log || console.log)(`Your party’s strength helped on this run.`);
-    }
     console.log('[DEBUG] doExplore finished, newlyTamed:', !!newlyTamed);
 
-    if (newlyTamed) {
+    if (resourcesGained.length > 0) {
+        setTimeout(() => {
+            const resFn = window.showResourceGain || (() => {});
+            if (gotSlime && newlyTamed) {
+                resFn(location, resourcesGained, () => {
+                    const reveal = window.showNewSlimeReveal || (() => {});
+                    reveal(newlyTamed);
+                });
+            } else {
+                resFn(location, resourcesGained);
+                if (newlyTamed) {
+                    const reveal = window.showNewSlimeReveal || (() => {});
+                    reveal(newlyTamed);
+                }
+            }
+        }, 220);
+    } else if (newlyTamed) {
         setTimeout(() => {
             const reveal = window.showNewSlimeReveal || (() => {});
             reveal(newlyTamed);

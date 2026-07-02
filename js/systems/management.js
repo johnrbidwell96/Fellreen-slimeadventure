@@ -48,14 +48,22 @@ function slimeParty() {
 
 function evolveSlime() {
     const g = window.game || {};
-    const candidates = (g.slimes || []).filter(s => s.level >= 10 && !s.evolved);
-    if (candidates.length === 0) { (window.log || console.log)("Need a level 10+ slime that hasn't evolved yet."); return; }
+    const candidates = (g.slimes || []).filter(s => {
+        const evo = s.evolutionLevel || 0;
+        const reqLevel = 10 + (evo * 5); // 10 for 1★, 15 for 2★, etc up to 30 for 5★
+        return s.level >= reqLevel && evo < 5;
+    });
+    if (candidates.length === 0) { 
+        (window.log || console.log)("Need a sufficiently leveled slime (10+ for 1★, +5 per star) that hasn't reached 5★ yet."); 
+        return; 
+    }
     const slime = candidates[0];
-    slime.evolved = true;
-    slime.level += 4;
+    const currentEvo = slime.evolutionLevel || 0;
+    slime.evolutionLevel = currentEvo + 1;
+    slime.level += 4; // bonus levels on evolve
     (window.recalculateSlimePower || (() => {}))(slime);
     g.totalEvolutions = (g.totalEvolutions || 0) + 1;
-    (window.log || console.log)(`${slime.name} evolved! Power greatly increased (now scales with level + rarity).`);
+    (window.log || console.log)(`${slime.name} evolved to ${slime.evolutionLevel}★! Power greatly increased (now scales with level + rarity).`);
     (window.updateUI || (() => {}))();
 }
 
@@ -103,7 +111,7 @@ function fuseSlimes() {
         level: Math.max(baseSlime.level, sacrificeSlime.level) + 3, 
         exp: 0,
         locked: false,
-        evolved: baseSlime.evolved || sacrificeSlime.evolved
+        evolutionLevel: Math.max(baseSlime.evolutionLevel || 0, sacrificeSlime.evolutionLevel || 0)
     };
     (window.recalculateSlimePower || (() => {}))(fused);
 
@@ -135,9 +143,10 @@ function openLockModal() {
         const div = document.createElement('div');
         div.style.cssText = 'background:#113322; border:2px solid #77ffaa; border-radius:8px; padding:10px; margin:6px 0; display:flex; justify-content:space-between; align-items:center;';
 
+        const evoStr = (slime.evolutionLevel||0) > 0 ? ' ' + '★'.repeat(slime.evolutionLevel) : '';
         div.innerHTML = `
             <div>
-                <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.element} ${slime.rarity})<br>
+                <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.element} ${slime.rarity})${evoStr}<br>
                 <small>${slime.power} PWR • ${slime.exp || 0} EXP</small>
             </div>
             <div>
@@ -261,43 +270,58 @@ function filterSlimeList() {
         }
     }
 
-    // Render each slime as a row
+    // Render each slime as a nice collection card (Raid-style grid)
     filtered.forEach(slime => {
         const originalIndex = (g.slimes || []).findIndex(s => s.id === slime.id);
-
-        const row = document.createElement('div');
         const isSel = window.managementSelectedSlimes.includes(slime.id);
-        row.style.cssText = 'display:flex; align-items:center; gap:8px; background:#0f2a20; border:1px solid ' + (isSel ? '#aaff99' : '#556655') + '; border-radius:6px; padding:6px 8px; margin:3px 0; font-size:12px;' + (isSel ? ' box-shadow: 0 0 0 1px #aaff99;' : '');
 
-        // Small visual
-        let visual = document.createElement('span');
-        if (typeof createSlimeVisual === 'function') {
-            visual = createSlimeVisual(slime, { size: 'sm', interactive: false, showTraits: false });
-            visual.style.width = '36px';
-            visual.style.height = '36px';
-            visual.style.flexShrink = '0';
+        const card = document.createElement('div');
+        card.className = 'collection-card';
+        const rarityCol = (typeof getRarityColor === 'function') ? getRarityColor(slime.rarity) : '#77ffaa';
+        if (isSel) {
+            card.style.borderColor = '#aaff99';
+        } else {
+            card.style.borderColor = rarityCol;
         }
 
-        // Info
-        const info = document.createElement('div');
-        info.style.flex = '1';
-        info.style.minWidth = '0';
-        const traits = (slime.traits && slime.traits.length) ? ` • ${slime.traits.length} trait${slime.traits.length > 1 ? 's' : ''}` : '';
-        const partyBadge = (typeof isInParty === 'function' && isInParty(slime.id)) ? ' <span style="color:#ffdd77; font-size:10px;">★ PARTY</span>' : '';
-        info.innerHTML = `
-            <strong style="display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${slime.name}${partyBadge}</strong>
-            <small style="opacity:0.85;">${slime.element} • ${slime.rarity} • Lv${slime.level || 1} • ${slime.power || 0} PWR${traits}</small>
-        `;
+        // Visual on top
+        let visual = document.createElement('span');
+        if (typeof createSlimeVisual === 'function') {
+            visual = createSlimeVisual(slime, { 
+                size: 'sm', 
+                interactive: false, 
+                showTraits: !!(slime.traits && slime.traits.length), 
+                showElementBadge: false,
+                onMission: !!slime.onMission 
+            });
+            visual.style.width = '50px';
+            visual.style.height = '50px';
+        }
 
-        // Controls
+        // Name
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'slime-name';
+        const partyBadge = (typeof isInParty === 'function' && isInParty(slime.id)) ? ' ★' : '';
+        const evoStars = (slime.evolutionLevel || 0) > 0 ? ' ' + '★'.repeat(slime.evolutionLevel) : '';
+        nameDiv.textContent = (slime.name || 'Slime') + evoStars + partyBadge;
+
+        // Mini XP bar
+        const exp = slime.exp || 0;
+        const nextExp = 95;
+        const pct = Math.min(100, Math.floor((exp / nextExp) * 100));
+        const bar = document.createElement('div');
+        bar.className = 'mini-bar';
+        bar.innerHTML = `<div class="fill" style="width: ${pct}%"></div>`;
+
+        // Controls row
         const ctrls = document.createElement('div');
-        ctrls.style.cssText = 'display:flex; align-items:center; gap:3px; flex-shrink:0;';
+        ctrls.className = 'controls';
 
-        // Selection checkbox for bulk
+        // Selection checkbox
         const cb = document.createElement('input');
         cb.type = 'checkbox';
-        cb.checked = window.managementSelectedSlimes.includes(slime.id);
-        cb.style.marginRight = '2px';
+        cb.checked = isSel;
+        cb.style.margin = '0';
         cb.onchange = () => {
             if (!window.managementSelectedSlimes) window.managementSelectedSlimes = [];
             if (cb.checked) {
@@ -305,22 +329,15 @@ function filterSlimeList() {
             } else {
                 window.managementSelectedSlimes = window.managementSelectedSlimes.filter(id => id !== slime.id);
             }
-            // live update highlight
-            row.style.border = '1px solid ' + (cb.checked ? '#aaff99' : '#556655');
-            if (cb.checked) {
-                row.style.boxShadow = '0 0 0 1px #aaff99';
-            } else {
-                row.style.boxShadow = '';
-            }
+            (window.filterSlimeList || (() => {}))();
             updateCount();
         };
 
-        // === Party toggle (new party system) ===
+        // Party toggle
         const inParty = (typeof isInParty === 'function') ? isInParty(slime.id) : false;
         const partyBtn = document.createElement('button');
         partyBtn.textContent = inParty ? '★' : '☆';
-        partyBtn.title = inParty ? 'Remove from Party' : 'Add to Party (affects exploration & dungeons)';
-        partyBtn.style.cssText = `font-size:12px; padding:1px 4px; min-height:22px; line-height:1; ${inParty ? 'color:#ffdd77;' : ''}`;
+        partyBtn.title = inParty ? 'Remove from Party' : 'Add to Party';
         partyBtn.onclick = (e) => {
             e.stopPropagation();
             if (typeof togglePartyMember === 'function') {
@@ -333,11 +350,9 @@ function filterSlimeList() {
             }
         };
 
-        // Lock toggle
+        // Lock
         const lockBtn = document.createElement('button');
         lockBtn.textContent = slime.locked ? '🔓' : '🔒';
-        lockBtn.title = slime.locked ? 'Unlock' : 'Lock';
-        lockBtn.style.cssText = 'font-size:11px; padding:1px 5px; min-height:22px; line-height:1;';
         lockBtn.onclick = (e) => {
             e.stopPropagation();
             const target = (originalIndex >= 0) ? (g.slimes || [])[originalIndex] : slime;
@@ -349,25 +364,24 @@ function filterSlimeList() {
             (window.updateUI || (() => {}))();
         };
 
-        // Quick detail
+        // View
         const viewBtn = document.createElement('button');
         viewBtn.textContent = '👁';
-        viewBtn.title = 'View details';
-        viewBtn.style.cssText = 'font-size:11px; padding:1px 5px; min-height:22px;';
         viewBtn.onclick = (e) => {
             e.stopPropagation();
             if (typeof showSlimeDetail === 'function') showSlimeDetail(slime);
             else if (typeof openSlimeDetail === 'function') openSlimeDetail(slime);
         };
 
-        // Release / dismiss (cull unwanted low-rarity slimes)
+        // Release
         const releaseBtn = document.createElement('button');
         releaseBtn.textContent = '❌';
-        releaseBtn.title = 'Release (dismiss) this slime - get a little gold back';
-        releaseBtn.style.cssText = 'font-size:10px; padding:1px 4px; min-height:22px; background:#4a2222; border-color:#aa6666; color:#ffaaaa;';
+        releaseBtn.style.background = '#4a2222';
+        releaseBtn.style.borderColor = '#ff8866';
+        releaseBtn.style.color = '#ffaaaa';
         releaseBtn.onclick = (e) => {
             e.stopPropagation();
-            if (confirm(`Release ${slime.name} (${slime.rarity})? You will get a small gold reward.`)) {
+            if (confirm(`Release ${slime.name} (${slime.rarity})?`)) {
                 const rel = window.releaseSlime || (() => {});
                 rel(slime.id);
             }
@@ -379,18 +393,19 @@ function filterSlimeList() {
         ctrls.appendChild(viewBtn);
         ctrls.appendChild(releaseBtn);
 
-        row.appendChild(visual);
-        row.appendChild(info);
-        row.appendChild(ctrls);
+        card.appendChild(visual);
+        card.appendChild(nameDiv);
+        card.appendChild(bar);
+        card.appendChild(ctrls);
 
-        // Click row to toggle selection (but not if clicking controls)
-        row.onclick = (e) => {
+        // Click card to select for bulk
+        card.onclick = (e) => {
             if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
             cb.checked = !cb.checked;
             cb.onchange();
         };
 
-        listEl.appendChild(row);
+        listEl.appendChild(card);
     });
 
     updateCount();
@@ -548,11 +563,22 @@ function selectMissionForTraining(missionId, element) {
     available.forEach(slime => {
         const div = document.createElement('div');
         div.className = 'slime-select-item';
+        div.style.cssText = 'display:flex; align-items:center; gap:8px; padding:4px; border:1px solid #334433; border-radius:6px; margin:2px 0;';
+        let vis = '';
+        if (typeof createSlimeVisual === 'function') {
+            const v = createSlimeVisual(slime, { size: 'sm', interactive: false, showElementBadge: false, showTraits: false });
+            v.style.width = '32px';
+            v.style.height = '32px';
+            vis = v.outerHTML;
+        }
         div.innerHTML = `
             <input type="checkbox" id="train-${slime.id}">
-            <label for="train-${slime.id}" style="flex:1; cursor:pointer;">
-                <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.element} ${slime.rarity})<br>
-                <small>${slime.power} PWR</small>
+            <label for="train-${slime.id}" style="flex:1; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                ${vis}
+                <div>
+                    <strong>${slime.name}</strong> (Lv ${slime.level} ${slime.rarity})${ (slime.evolutionLevel||0) > 0 ? ' ' + '★'.repeat(slime.evolutionLevel) : '' }<br>
+                    <small>${slime.power} PWR</small>
+                </div>
             </label>
         `;
         if (list) list.appendChild(div);

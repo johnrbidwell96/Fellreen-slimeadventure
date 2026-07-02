@@ -67,8 +67,11 @@ function canPerformAction() {
 function saveGame() {
     try {
         localStorage.setItem('slimeAdventureSave', JSON.stringify(game));
-        // Optional visual feedback handled in UI layer
-        console.log('✅ Game saved!');
+        if (typeof window.log === 'function') {
+            window.log('✅ Game saved!');
+        } else {
+            console.log('✅ Game saved!');
+        }
         return true;
     } catch (e) {
         console.error('Save failed:', e);
@@ -100,6 +103,10 @@ function loadGame() {
             // Recalculate slime powers after load (important for balance changes)
             if (game.slimes && game.slimes.length > 0) {
                 game.slimes.forEach(s => {
+                    if (s.evolved && !s.evolutionLevel) {
+                        s.evolutionLevel = 1;
+                        delete s.evolved;
+                    }
                     if (typeof recalculateSlimePower === 'function') {
                         recalculateSlimePower(s);
                     }
@@ -120,7 +127,11 @@ function exportSave() {
         const dataStr = JSON.stringify(game);
         const encoded = btoa(unescape(encodeURIComponent(dataStr)));
         navigator.clipboard.writeText(encoded).then(() => {
-            console.log('📤 Save exported to clipboard!');
+            if (typeof window.log === 'function') {
+                window.log('📤 Save exported to clipboard!');
+            } else {
+                console.log('📤 Save exported to clipboard!');
+            }
         }).catch(() => {
             prompt('Copy this save string:', encoded);
         });
@@ -132,6 +143,9 @@ function exportSave() {
 }
 
 function importSave(encodedString) {
+    if (!encodedString) {
+        encodedString = prompt('Paste the exported save string here:');
+    }
     if (!encodedString || encodedString.trim().length < 10) return false;
     
     try {
@@ -156,6 +170,10 @@ function importSave(encodedString) {
         // Re-hydrate
         if (game.slimes && game.slimes.length > 0) {
             game.slimes.forEach(s => {
+                if (s.evolved && !s.evolutionLevel) {
+                    s.evolutionLevel = 1;
+                    delete s.evolved;
+                }
                 if (typeof recalculateSlimePower === 'function') recalculateSlimePower(s);
             });
         }
@@ -171,6 +189,7 @@ function importSave(encodedString) {
 
         console.log('📥 Save imported successfully!');
         saveGame();
+        if (typeof updateUI === 'function') updateUI();
         return true;
     } catch (e) {
         console.error('Import failed:', e);
@@ -365,8 +384,11 @@ function recalculateSlimePower(slime) {
 
     let power = Math.floor(levelPower * rarityMulti);
 
-    if (slime.evolved) {
-        power = Math.floor(power * 1.28);
+    const evoLevel = slime.evolutionLevel || 0;
+    if (evoLevel > 0) {
+        // Each star gives compounding boost, up to 5★
+        const evoMult = Math.pow(1.22, evoLevel);
+        power = Math.floor(power * evoMult);
     }
 
     if (power > 1350) {

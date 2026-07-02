@@ -1,6 +1,8 @@
 # Slime Adventure
 
-A cozy single-file idle browser game inspired by *By the Grace of the Gods*. Build and manage a collection of elemental slimes across a relaxing yet deep progression loop.
+A cozy idle browser game inspired by *By the Grace of the Gods*. Build and manage a collection of elemental slimes (with Raid Shadow Legends-style visuals) across exploration, dungeons, party-building, and 5★ evolution.
+
+**Current status (2026-07-02):** Phase 0 (modular refactor) complete. Phase 1 visuals/collection/popups/evolution ~80%. Resources always show nice centered popups (even when catching slime). Party up to ~30. Playable and savable. See GAMEPLAN.md + REFACTOR_PROGRESS.md.
 
 ## ✨ Features
 
@@ -35,21 +37,30 @@ A cozy single-file idle browser game inspired by *By the Grace of the Gods*. Bui
 
 ## 🗂️ Project Structure
 
-The game is now organized as a multi-file project (no longer a single monolithic file). This makes it much easier to maintain as we add visuals, systems, and eventually turn it into a desktop app.
+The game is fully modular (Phase 0 complete). See `GAMEPLAN.md` and `REFACTOR_PROGRESS.md` for roadmap + detailed status.
 
 ```
 Slime Adventure/
-├── index.html          # Main entry point (opens the game)
-├── package.json        # Project config + launch scripts
-├── README.md
+├── index.html                 # Thin shell (HTML + modals + script loads)
+├── package.json
+├── README-2.md (or README.md)
+├── GAMEPLAN.md                # Long-term phased roadmap (read this first)
+├── REFACTOR_PROGRESS.md       # Concrete completed work log + how to resume
 ├── styles/
-│   └── main.css        # All styles (including new visual slime effects)
+│   └── main.css               # Slime visuals, rarity frames, grids, modals, dark
 └── js/
-    ├── main.js         # Bootstraps the game
-    ├── data/           # Constants, element visuals, map data, etc.
-    ├── visuals.js      # createSlimeVisual() and element/rarity rendering
-    ├── ui.js           # Rendering, modals, battle presentation
-    └── systems/        # exploration, combat, management, alchemy logic
+    ├── main.js                # Init, tab switch, wiring
+    ├── state.js               # game state, save/load, party, power calc, migrate
+    ├── ui.js                  # Renders (haven/collection/inventory/detail), updateUI
+    ├── visuals.js             # createSlimeVisual (frames, stars, mouths, eyes, badges), show*Modal/reveal
+    ├── data/
+    │   └── constants.js       # MAP_DATA, DUNGEON_*, BOSS_*, ELEMENT_CHART, TRAITS, etc.
+    └── systems/
+        ├── exploration.js     # doExplore, map, farm, auto, unlocks
+        ├── combat.js          # runDungeon, boss fights, advantage
+        ├── management.js      # evolve (to 5★), fuse, breed, party toggle, training, filters
+        ├── alchemy.js
+        └── progression.js
 ```
 
 **How to launch (pick one):**
@@ -64,7 +75,7 @@ Slime Adventure/
 
 ---
 
-**Important**: See `GAMEPLAN.md` for the detailed long-term step-by-step roadmap. This is the document future Grok sessions (or contributors) should follow to do heavy lifting on visuals, architecture, content, and the eventual desktop app.
+**Important**: See `GAMEPLAN.md` (vision + phases) and `REFACTOR_PROGRESS.md` (what's done + resume instructions) first for any continuation work. They are the single source of truth for future sessions.
 
 ## 💾 Save Data
 
@@ -93,8 +104,9 @@ Key objects/functions to know:
 To develop:
 - Edit files in `js/` and `styles/`
 - Refresh the page (or the local server)
+- Always update REFACTOR_PROGRESS.md + GAMEPLAN.md after changes.
 
-Future desktop app path: We can wrap this web app in **Electron** (or Tauri) with almost zero changes to the game code. The `index.html` becomes the renderer content.
+Future desktop app path: We can wrap this web app in **Electron** (or Tauri) with almost zero changes. The `index.html` becomes the renderer content. (Phase 4 later)
 
 ## 🚀 Future Ideas / Roadmap (not yet implemented)
 

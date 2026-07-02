@@ -155,7 +155,7 @@
             <div id="slimeActionsContent" class="collapsible-content collapsed">
                 <button id="slimePartyBtn" onclick="slimeParty()">🎉 Slime Party</button>
                 <div id="slimePartyStatus" style="font-size:10px; text-align:center; margin-top:-4px; margin-bottom:6px; color:#aaff99; opacity:0.75;"></div>
-                <button onclick="evolveSlime()">🌟 Evolve a Slime</button>
+                <button onclick="evolveSlime()">🌟 Evolve a Slime (up to 5★)</button>
                 <button onclick="fuseSlimes()">🔥 Fuse Two Slimes</button>
                 <button onclick="openLockModal()">🔒 Lock / Unlock Slimes</button>
             </div>
@@ -478,7 +478,7 @@
         <div style="font-size:10px; opacity:0.7; margin:4px 0 6px 4px;">
             ☆ / ★ = toggle Party (up to 30 with high Leadership — appears in top bar & powers exploration/dungeons). ❌ = release unwanted slimes.
         </div>
-        <div id="slimeManagementList" style="max-height:420px; overflow-y:auto; background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px; padding:8px;"></div>
+        <div id="slimeManagementList" style="max-height:420px; overflow-y:auto; background:#0a2a1a; border:2px solid #77ffaa; border-radius:10px;"></div>
 
         <div style="text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; align-items:center;">
             <span id="bulkSelectCount" style="font-size:12px; color:#aaff99; margin-right:8px;"></span>
@@ -532,8 +532,6 @@
 <script>
 // Thin shell - auto-save + bridges
 setInterval(() => { try { if (window.game) localStorage.setItem('slimeAdventureSave', JSON.stringify(window.game)); } catch(e){} }, 30000);
-const MAP_DATA = window.MAP_DATA || {};
-var game = window.game || (window.game = {});
 function toggleDarkMode() { document.body.classList.toggle('dark-mode'); try { localStorage.setItem('slimeDarkMode', document.body.classList.contains('dark-mode')?'1':'0'); } catch(e){} }
 function loadDarkModePreference() { try { if (localStorage.getItem('slimeDarkMode')==='1') document.body.classList.add('dark-mode'); } catch(e){} }
 window.toggleDarkMode = toggleDarkMode;

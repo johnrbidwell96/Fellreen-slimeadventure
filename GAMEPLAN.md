@@ -30,7 +30,7 @@ The plan is designed so that **any future Grok session** (or human contributor) 
 
 ---
 
-## 2. Current State (as of 2026-07-01)
+## 2. Current State (as of 2026-07-02)
 
 - **Tech**: Browser-based (HTML + CSS + vanilla JS). Runs by opening `index.html` or via local server.
 - **Architecture**: Moving away from single-file. We have started extracting:
@@ -310,21 +310,23 @@ This leverages strengths: conversational depth + agentic coding power.
 
 Current recommended starting task:
 
-**Phase 0: Complete** (as of 2026-07-01 + follow-up sessions).
+**Phase 0: Complete** (fully as of 2026-07-02).
 
-- Full modular split done (index.html is thin shell, all systems in js/).
-- Many reported bugs fixed along the way.
-- Bonus features added on top of foundation: full Party system (up to 30), combined Party Power display, release mechanic.
+- Full modular split done (index.html is thin shell, all systems in js/ + data + systems).
+- Many reported bugs fixed: explore clicks, auto, rates, dungeon clicks/popups, dropdowns, party stale after fuse, import/export/save buttons, visible script text, shadowfen unlock flow.
+- Major features added: full Party system (up to 30 via Leadership), combined Party Power, release/culling, multi-star evolution (1★-5★ with scaling reqs + power), front-and-center resource popups (always shown via showGainModal, chained reveals, no bottom resource toasts).
 
-Next priority: **Phase 1 (Visual Identity & Collection)**
-- Enhance `createSlimeVisual` further (more personality, on-mission states, evolution indicators).
-- Improve Collection experience (search/filters already partially in place via management modal).
-- Richer detail views + progress bars.
-- Better new slime reveal ceremony.
+**Phase 1: Strong progress** (see REFACTOR_PROGRESS.md for full details).
+- Visuals heavily upgraded (rarity frames matching shaped blobs with inset -5px, badges, element mouths/eyes/blink, on-mission, evolution stars, animations).
+- Collection: Haven party-only grid + mini XP; management grid of Raid-style .collection-card with visuals/XP/rarity borders/stars/controls (no redundant text).
+- Popups: Exploration + dungeons use nice centered modals with icons for all gains (even alongside slime tames). Slime reveal chained.
+- Detail + UI: XP bars everywhere, trait badges, multi-star evo display, on-mission status.
+- Small 07-02 polish: cross-region unlock (Shadowfen etc.) now reliably updates switcher buttons on clear.
+- Global styles + progress started.
 
-Then Phase 2 (make exploration & combat feel good with dedicated animated results).
+Next priority (per REFACTOR_PROGRESS): Finish remaining Phase 1 (more personality/faces/idle effects in createSlimeVisual, richer details, broader frame application, better reveal ceremony). Then Phase 2 (spectacle on explore/combat results).
 
-See Section 9 for exact extraction status.
+See REFACTOR_PROGRESS.md "How to continue later" and wrap-up for exact resume steps.
 
 ---
 
@@ -336,19 +338,21 @@ Let's make some cool slimes. 🐾
 
 ## 9. Phase 0 Progress (Updated by Grok Build)
 
-**Completed in this session:**
-- `js/data/constants.js` — All major data (elements, charts, MAP_DATA full, bosses, requirements, TRAIT_DEFINITIONS, REGION_LOOT_TABLES, helpers). Duplicates removed from index.html.
-- `js/state.js` — Enhanced with `recalculateSlimePower`, trait effect helpers, `getPartyPowerMultiplier`, etc.
-- `js/ui.js` — Significantly expanded with renderers (haven, inventory, player, records, workshop), slime detail modal, updateUI, log, format helpers.
-- `js/main.js` — Clean bootstrap + tab switching + proper init sequence.
-- `js/systems/exploration.js` — Created. Contains `renderMap`, `exploreNode`, `farmClearedNode`, auto-explore helpers, difficulty cycling.
-- `index.html` — Script loading order cleaned + comments added. Large constant blocks removed. Structure is now a proper shell + remaining logic during transition.
-- `package.json` — Added phase0-check script.
+**Completed (Phase 0 foundation):**
+- Full modular extraction to match target architecture:
+  - `js/data/constants.js`, `js/state.js`, `js/visuals.js`, `js/ui.js`, `js/main.js`
+  - `js/systems/` (exploration.js, combat.js, management.js, alchemy.js, progression.js)
+- `index.html` is now a clean thin shell (HTML structure + modals + ordered script loads + tiny bridge).
+- All cross-calls via window.* exposure + init order safety.
+- Bugs addressed during/after split: nodes, auto, dungeons, dropdowns, party sync, imports, no stray script text, etc.
 
-**Current state:**
-- Project is modular (matches recommended architecture).
-- index.html is much thinner than before but some gameplay functions (combat, alchemy, breeding, full training timers, dungeons, bosses) remain in the inline script for stability.
-- Game should still run via `index.html` or `npm start`.
-- Next logical steps after this Phase 0 pass: move remaining systems (combat/management/alchemy) into `js/systems/`, then full Phase 1 polish.
+**Current state (2026-07-02):**
+- Project fully modular (all major logic out of index.html).
+- Game runs cleanly via `index.html` or `npm start`.
+- Later sessions added major gameplay on the solid base: Party + power (max ~30), 5★ evolution, resource popups always (front+center, chained), no bottom toasts, Raid-like collection cards + stars + XP bars.
+- Minor polish: reliable region unlock visuals.
+- See REFACTOR_PROGRESS.md for detailed timeline.
 
-*Last updated: 2026-07-01 (Phase 0 work)*
+**Next after Phase 0**: Phase 1 completion then Phase 2.
+
+*Last updated: 2026-07-02*

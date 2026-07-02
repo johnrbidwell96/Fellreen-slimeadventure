@@ -10,7 +10,10 @@
 function runDungeon(dungeonId) {
     const req = (window.DUNGEON_REQUIREMENTS || {})[dungeonId];
     const g = window.game || {};
-    if ((g.playerLevel || 1) < req) { (window.log || console.log)(`Requires Player Level ${req}`); return; }
+    if ((g.playerLevel || 1) < req) { 
+        (window.log || console.log)(`Requires Player Level ${req}`); 
+        return; 
+    }
 
     // Dungeons now use your Party power (not entire collection)
     const partyPwr = (typeof getPartyPower === 'function') ? getPartyPower() : 400;
@@ -21,6 +24,9 @@ function runDungeon(dungeonId) {
 
     const success = Math.random() < Math.min(0.95, successChance);
 
+    let gains = [];
+    let tamedSlime = null;
+
     if (success) {
         const partyPwr = (typeof getPartyPower === 'function') ? getPartyPower() : 400;
         const pScale = 1 + Math.min(0.8, partyPwr / 3000);
@@ -30,10 +36,14 @@ function runDungeon(dungeonId) {
         g.resources.gold = (g.resources.gold || 0) + goldGain;
         g.resources.slimeEssence = (g.resources.slimeEssence || 0) + essenceGain;
 
+        gains.push(`${goldGain} Gold`);
+        gains.push(`${essenceGain} Essence`);
+
         if (dungeonId === 'abyssal_throne' || dungeonId === 'origin_core') {
             const divine = 1;
             g.resources.divineShards = (g.resources.divineShards || 0) + divine;
             g.lifetimeDivineShards = (g.lifetimeDivineShards || 0) + divine;
+            gains.push(`${divine} Divine Shard`);
         }
 
         if (Math.random() < 0.45) {
@@ -43,24 +53,48 @@ function runDungeon(dungeonId) {
                 g.slimes = g.slimes || [];
                 g.slimes.push(newSlime);
                 g.lifetimeSlimesTamed = (g.lifetimeSlimesTamed || 0) + 1;
-                (window.log || console.log)(`Dungeon success! Found ${goldGain} Gold, ${essenceGain} Essence, and tamed a ${newSlime.rarity} slime!`);
+                tamedSlime = newSlime;
             }
-        } else {
-            (window.log || console.log)(`Dungeon success! Found ${goldGain} Gold and ${essenceGain} Essence.`);
         }
         const dungeonDamage = 120 + ((g.playerLevel || 1) * 8);
         g.totalDamageDealt = (g.totalDamageDealt || 0) + dungeonDamage;
         g.totalDungeonsCleared = (g.totalDungeonsCleared || 0) + 1;
         (window.gainPlayerExp || (() => {}))(12 + Math.floor((g.playerLevel || 1) / 3));
     } else {
-        (window.log || console.log)("Dungeon failed... better luck next time.");
         if ((g.resources && g.resources.healingSalve || 0) > 0 && Math.random() < 0.35) {
             g.resources.healingSalve--;
-            (window.log || console.log)("Your Healing Salve activated automatically and softened the blow!");
+            console.log("Your Healing Salve activated automatically and softened the blow!");  // console only; popup is main feedback
         }
     }
     g.battleElixirActive = false;
     (window.updateUI || (() => {}))();
+
+    // Show nice popup for dungeon results (like exploration) - always, even on fail or no gains
+    const dungeonNames = {
+        forest_depths: "Forest Depths",
+        crystal_caverns: "Crystal Caverns",
+        shadow_abyss: "Shadow Abyss",
+        ancient_temple: "Ancient Temple",
+        molten_core: "Molten Core",
+        glacial_spire: "Glacial Spire",
+        thunder_sanctum: "Thunder Sanctum",
+        abyssal_throne: "Abyssal Throne",
+        origin_core: "Origin Core",
+    };
+    const dName = dungeonNames[dungeonId] || dungeonId.replace(/_/g, ' ');
+    const title = success ? `✅ ${dName} SUCCESS!` : `❌ ${dName} FAILED...`;
+    const sub = success ? "You cleared the dungeon!" : "The dungeon was too tough...";
+    setTimeout(() => {
+        const resFn = window.showGainModal || window.showResourceGain || (() => {});
+        if (tamedSlime) {
+            resFn(title, sub, gains, () => {
+                const reveal = window.showNewSlimeReveal || (() => {});
+                reveal(tamedSlime);
+            });
+        } else {
+            resFn(title, sub, gains);
+        }
+    }, 220);
 }
 
 function prepareForBossFight(bossId) {
@@ -109,7 +143,7 @@ function prepareForBossFight(bossId) {
         else if (adv < 1) badge = `<span style="color:#f87171; font-size:10px;">-${Math.round((1-adv)*100)}%</span>`;
         else badge = `<span style="opacity:0.7; font-size:10px;">Neutral</span>`;
 
-        const miniVis = (window.createSlimeVisual || (() => document.createElement('div')))(slime, { size: 'sm' });
+        const miniVis = (window.createSlimeVisual || (() => document.createElement('div')))(slime, { size: 'sm', showElementBadge: false });
 
         const text = document.createElement('div');
         text.style.flex = '1';

@@ -5,7 +5,33 @@
     .gold-bar { background: #0d2f22; padding: 8px 14px; text-align: center; border-bottom: 4px solid #ffdd77; }
     .gold-bar strong { color: #ffdd77; font-size: 16px; }
     .haven-bar { padding: 8px 12px; background: #0d2f22; border-radius: 8px; }
-    .haven-grid { display: flex; flex-wrap: wrap; gap: 6px; max-height: 260px; overflow-y: auto; align-items: flex-start; } /* room for larger slime army (up to 12) */
+    .haven-grid { 
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 6px; 
+        max-height: 260px; 
+        overflow-y: auto; 
+        align-items: flex-start; 
+        background: linear-gradient(#0a2a1a, #112211);
+        border: 3px solid #556655;
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    } /* room for larger slime army (up to 12) - nicer shelf feel */
+
+    #playerXpBar {
+        height: 5px;
+        background: #112211;
+        border-radius: 3px;
+        margin: 2px 0;
+        overflow: hidden;
+        border: 1px solid #556655;
+    }
+    #playerXpBar .fill {
+        height: 100%;
+        background: linear-gradient(90deg, #aaff99, #77ffaa);
+        transition: width 0.3s ease;
+    }
     .haven-card { background: linear-gradient(#113322, #1f5538); border: 3px solid #77ffaa; border-radius: 10px; padding: 8px 10px; min-width: 152px; font-size: 11px; transition: all 0.2s ease; }
     .haven-card.on-mission { opacity: 0.55; border-color: #888; background: linear-gradient(#222222, #333333); }
     .haven-card .mission-timer { color: #ffaa66; font-size: 10px; margin-top: 4px; font-weight: bold; }
@@ -247,6 +273,7 @@
             0 4px 10px rgba(0,0,0,0.3);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         overflow: hidden;
+        z-index: 1;
     }
     .slime-visual:hover .slime-body {
         transform: translateY(-2px) scale(1.02);
@@ -272,6 +299,20 @@
         height: 16%;
         top: 32%;
         right: 26%;
+    }
+
+    /* Element personality for eyes (more Raid-like charm) */
+    .slime-visual[data-element="Fire"] .slime-body::before,
+    .slime-visual[data-element="Fire"] .slime-body::after {
+        height: 14%; top: 30%; /* narrower, fierce */
+    }
+    .slime-visual[data-element="Water"] .slime-body::before,
+    .slime-visual[data-element="Water"] .slime-body::after {
+        border-radius: 50% 50% 40% 40%; /* rounder */
+    }
+    .slime-visual[data-element="Lightning"] .slime-body::before,
+    .slime-visual[data-element="Lightning"] .slime-body::after {
+        width: 12%; height: 20%; /* sharper */
     }
 
     /* Shine highlight */
@@ -301,67 +342,279 @@
         box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         z-index: 2;
     }
-    .slime-visual.size-sm .slime-element-badge { font-size: 9px; padding: 1px 3px; }
+    .slime-visual.size-sm .slime-element-badge { font-size: 9px; padding: 1px 3px; z-index: 4; }
 
-    /* Level badge */
+    /* Mouth for personality */
+    .slime-mouth {
+        position: absolute;
+        top: 55%;
+        left: 35%;
+        width: 30%;
+        height: 8%;
+        background: #222;
+        border-radius: 0 0 50% 50%;
+        box-shadow: 0 1px 0 rgba(255,255,255,0.2);
+        z-index: 2;
+    }
+    .slime-visual.size-sm .slime-mouth {
+        top: 52%;
+        height: 6%;
+    }
+
+    /* Collection / Modal card polish - Raid hero card vibe */
+    #slimeManagementList {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    #slimeManagementList .collection-card {
+        background: #0f2a20;
+        border: 2px solid #77ffaa;
+        border-radius: 10px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        cursor: pointer;
+        overflow: visible;
+    }
+
+    #slimeManagementList .collection-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    #slimeManagementList .collection-card .slime-name {
+        font-weight: 700;
+        font-size: 12px;
+        text-align: center;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #slimeManagementList .collection-card .mini-bar {
+        width: 100%;
+        height: 6px;
+        background: #112211;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 2px;
+    }
+
+    #slimeManagementList .collection-card .mini-bar .fill {
+        height: 100%;
+        background: linear-gradient(90deg, #77ffaa, #aaffcc);
+        transition: width 0.3s ease;
+    }
+
+    #slimeManagementList .collection-card .controls {
+        display: flex;
+        gap: 4px;
+        margin-top: 4px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    #slimeManagementList .collection-card .controls button {
+        font-size: 10px;
+        padding: 2px 6px;
+        min-height: 20px;
+    }
+
+    .inventory-item:hover {
+        border-color: #aaff99;
+        box-shadow: 0 2px 8px rgba(119, 255, 170, 0.2);
+        transform: translateY(-1px);
+    }
+
+    /* Global visual language - consistent premium cards */
+    .inventory-item {
+        border: 2px solid #77ffaa;
+        background: linear-gradient(#0f2a20, #0a2a1a);
+    }
+
+    /* Level badge styles are defined below for wrapper positioning */
+
+    /* Power badge (Raid style quick glance) - positioned outside/overlay on the visual wrapper */
+    .slime-power-badge {
+        position: absolute;
+        bottom: -1px;
+        left: 2px;
+        background: rgba(17, 34, 17, 0.9);
+        color: #aaff99;
+        font-size: 8px;
+        font-weight: 700;
+        padding: 0 3px;
+        border-radius: 2px;
+        border: 1px solid #77ffaa;
+        z-index: 5;
+        line-height: 1;
+        white-space: nowrap;
+    }
+    .slime-visual.size-sm .slime-power-badge { font-size: 6px; padding: 0 2px; bottom: 0; left: 1px; }
+
+    /* Level badge - moved to wrapper for clean edge placement */
     .slime-level-badge {
         position: absolute;
-        bottom: -2px;
-        right: -2px;
+        bottom: -1px;
+        right: 2px;
         background: #112211;
         color: #aaff99;
-        font-size: 10px;
+        font-size: 8px;
         font-weight: 700;
-        padding: 1px 5px;
-        border-radius: 4px;
-        border: 1.5px solid #77ffaa;
-        z-index: 2;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        padding: 0 3px;
+        border-radius: 2px;
+        border: 1px solid #77ffaa;
+        z-index: 5;
+        line-height: 1;
     }
-    .slime-visual.size-sm .slime-level-badge { font-size: 8px; padding: 0 3px; }
+    .slime-visual.size-sm .slime-level-badge { font-size: 6px; padding: 0 2px; bottom: 0; right: 1px; }
 
-    /* Rarity rings / glows */
-    .slime-visual.rarity-Uncommon .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 6px #22c55e; }
-    .slime-visual.rarity-Rare .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 8px #3b82f6; }
-    .slime-visual.rarity-Epic .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 10px #a855f7; }
-    .slime-visual.rarity-Legendary .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 12px #f59e0b; animation: legendary-glow 2.2s ease-in-out infinite; }
+    /* Evolution stars (multi-star support) */
+    .slime-evo-indicator {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        color: #ffdd77;
+        font-size: 10px;
+        text-shadow: 0 0 4px #f59e0b;
+        z-index: 5;
+        white-space: nowrap;
+    }
+    .slime-visual.size-sm .slime-evo-indicator { font-size: 8px; top: 1px; right: 1px; }
 
-    .slime-visual.rarity-Legendary::after {
+    /* On Mission overlay - stronger Raid-like disabled state */
+    .slime-mission-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: inherit;
+        z-index: 4;
+        color: #ffaa66;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* Trait stars */
+    .slime-trait-stars {
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        color: #aaff99;
+        opacity: 0.9;
+        z-index: 3;
+        text-shadow: 0 0 3px #000;
+    }
+    .slime-visual.size-sm .slime-trait-stars { font-size: 8px; }
+
+    /* Premium Raid-like Rarity Frames & Glows */
+    .slime-visual {
+        position: relative;
+    }
+
+    .slime-visual .rarity-frame {
+        position: absolute;
+        inset: -5px;
+        /* border-radius is now synced in JS to match the body's organic shape */
+        pointer-events: none;
+        z-index: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .slime-visual.rarity-Common .rarity-frame { border: 2px solid #9ca3af; }
+    .slime-visual.rarity-Uncommon .rarity-frame { border: 3px solid #22c55e; box-shadow: 0 0 6px #22c55e44; }
+    .slime-visual.rarity-Rare .rarity-frame { border: 3px solid #3b82f6; box-shadow: 0 0 8px #3b82f644; }
+    .slime-visual.rarity-Epic .rarity-frame { border: 4px solid #a855f7; box-shadow: 0 0 12px #a855f755; }
+    .slime-visual.rarity-Legendary .rarity-frame { 
+        border: 4px solid #f59e0b; 
+        box-shadow: 0 0 16px #f59e0b66; 
+        animation: legendary-frame 2.5s ease-in-out infinite;
+    }
+
+    .slime-visual.rarity-Legendary .rarity-frame::after {
         content: '';
         position: absolute;
-        inset: -6px;
+        inset: -3px;
         border-radius: 50%;
-        background: linear-gradient(45deg, #f59e0b22, #fef08c22, #f59e0b22);
-        z-index: 1;
-        pointer-events: none;
-        animation: legendary-shimmer 1.8s linear infinite;
+        background: linear-gradient(45deg, transparent, #f59e0b22, transparent);
+        animation: legendary-shimmer 2s linear infinite;
     }
+
+    /* Reduced body glows so the outer rarity-frame reads as a clear border, not misaligned glow */
+    .slime-visual.rarity-Uncommon .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 3px #22c55e; }
+    .slime-visual.rarity-Rare .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 4px #3b82f6; }
+    .slime-visual.rarity-Epic .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 5px #a855f7; }
+    .slime-visual.rarity-Legendary .slime-body { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 6px #f59e0b; animation: legendary-glow 2.2s ease-in-out infinite; }
 
     @keyframes legendary-glow {
-        0%,100% { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 12px #f59e0b; }
-        50% { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 18px #fcd34d; }
+        0%,100% { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 14px #f59e0b; }
+        50% { box-shadow: inset 0 8px 12px rgba(255,255,255,0.45), inset 0 -6px 10px rgba(0,0,0,0.25), 0 4px 10px rgba(0,0,0,0.3), 0 0 22px #fcd34d; }
     }
     @keyframes legendary-shimmer {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(200%); }
+    }
+    @keyframes legendary-frame {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
     }
 
-    /* Gentle idle "alive" animation so your slimes feel like companions, not static icons */
+    /* Premium idle animations - Raid-like "alive" collector feel */
     @keyframes slime-bob {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-1.5px); }
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-2px) scale(1.015); }
+    }
+    @keyframes slime-breathe {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.025); }
+    }
+
+    @keyframes eye-blink {
+        0%, 92%, 100% { transform: scaleY(1); }
+        94% { transform: scaleY(0.05); }
     }
     .slime-visual {
-        animation: slime-bob 3.2s ease-in-out infinite;
+        animation: slime-bob 3.5s ease-in-out infinite, slime-breathe 4.2s ease-in-out infinite;
     }
     .haven-grid .slime-visual {
-        animation: slime-bob 2.8s ease-in-out infinite;
+        animation: slime-bob 3.2s ease-in-out infinite, slime-breathe 3.8s ease-in-out infinite;
+    }
+    .slime-body::before, .slime-body::after {
+        animation: eye-blink 5s ease-in-out infinite;
     }
     .slime-visual:hover {
-        animation: none; /* pause bob on hover for focus */
+        animation: none; /* pause for focus */
+    }
+
+    /* Extra shimmer on high rarity bodies */
+    .slime-visual.rarity-Legendary .slime-body::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
+        animation: legendary-shimmer 3s linear infinite;
+        border-radius: inherit;
     }
 
     /* Battle / result extras */
+    .result-modal {
+        border-color: #ffdd77 !important;
+        box-shadow: 0 0 30px rgba(255, 221, 119, 0.15);
+    }
+
     .damage-float {
         position: absolute;
         color: #ff6666;
