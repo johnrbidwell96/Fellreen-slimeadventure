@@ -236,6 +236,31 @@ Alternative (lighter): Tauri (Rust + webview). Consider if bundle size becomes a
 
 ---
 
+## 4.5 Grok (Conversational) vs Grok Build — Task Allocation
+
+**Use Regular Grok (this chat) for:**
+- High-level planning, game design, balancing, and feature ideation.
+- Architecture decisions and detailed specs.
+- Visual/UX polish (CSS, JS animations, modal designs, flavor text).
+- Code review, small-to-medium implementations, and modular features.
+- Documentation updates and creative direction.
+- Quick wins and iterative improvements in Phases 0–3.
+
+**Use Grok Build (CLI agent) for:**
+- Large-scale refactoring and bulk file operations.
+- Setting up Electron desktop wrapper (Phase 4), build pipelines, and packaging.
+- Complex multi-file changes or performance optimizations.
+- Automation, testing frameworks, or integrating heavier dependencies.
+
+**Recommended Hybrid Workflow:**
+1. Plan + design + targeted code with regular Grok.
+2. Use Grok Build for execution on bigger structural changes or builds.
+3. Always update this GAMEPLAN.md after work.
+
+This leverages strengths: conversational depth + agentic coding power.
+
+---
+
 ## 5. How Future Grok Sessions Should Work
 
 1. Read this `GAMEPLAN.md` first.
